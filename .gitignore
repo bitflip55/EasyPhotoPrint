@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.vite/
+target/
+src-tauri/target/
+Cargo.lock
+*.log
+*.pdf
+.DS_Store

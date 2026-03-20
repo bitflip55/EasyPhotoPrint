@@ -1,0 +1,6 @@
+const CSS_PIXELS_PER_INCH = 96;
+const MILLIMETERS_PER_INCH = 25.4;
+
+export function mmToCssPixels(mm: number): number {
+  return (mm / MILLIMETERS_PER_INCH) * CSS_PIXELS_PER_INCH;
+}

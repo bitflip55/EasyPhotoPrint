@@ -1,0 +1,236 @@
+:root {
+  color-scheme: light;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #172033;
+  background:
+    radial-gradient(circle at top left, rgba(224, 233, 255, 0.8), transparent 28%),
+    linear-gradient(180deg, #f4f6fb 0%, #e8edf5 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --panel-bg: rgba(255, 255, 255, 0.78);
+  --panel-border: rgba(23, 32, 51, 0.1);
+  --panel-shadow: 0 24px 50px rgba(51, 66, 107, 0.08);
+  --accent: #2956d7;
+  --accent-muted: rgba(41, 86, 215, 0.1);
+  --text-soft: #5b6477;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: minmax(320px, 380px) minmax(0, 1fr);
+  min-height: 100vh;
+  padding: 24px;
+  gap: 24px;
+}
+
+.app-shell__sidebar,
+.app-shell__main {
+  min-width: 0;
+}
+
+.panel-stack {
+  display: grid;
+  gap: 16px;
+}
+
+.panel,
+.preview-stage {
+  backdrop-filter: blur(14px);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 24px;
+  box-shadow: var(--panel-shadow);
+}
+
+.panel {
+  padding: 20px;
+}
+
+.panel__header h1,
+.panel__header h2,
+.preview-stage__header h2 {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.panel__header h1 {
+  font-size: 1.75rem;
+}
+
+.panel__header h2,
+.preview-stage__header h2 {
+  font-size: 1.15rem;
+}
+
+.panel__text,
+.preview-stage__caption,
+.roadmap,
+.spec-list dd {
+  color: var(--text-soft);
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.spec-list {
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.spec-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(23, 32, 51, 0.08);
+}
+
+.spec-list dt {
+  font-weight: 600;
+}
+
+.spec-list dd {
+  margin: 0;
+  text-align: right;
+}
+
+.roadmap {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.preview-stage {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: calc(100vh - 48px);
+}
+
+.preview-stage__header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 24px 0;
+}
+
+.preview-stage__caption {
+  max-width: 36ch;
+  margin: 0;
+}
+
+.preview-stage__surface {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.page-preview {
+  position: relative;
+  width: min(100%, 620px);
+  aspect-ratio: 210 / 297;
+  padding: 42px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid rgba(23, 32, 51, 0.14);
+  box-shadow:
+    0 12px 28px rgba(19, 29, 54, 0.12),
+    0 2px 8px rgba(19, 29, 54, 0.08);
+}
+
+.page-preview__grid {
+  display: grid;
+  width: 100%;
+  height: 100%;
+}
+
+.page-preview__cell {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+  border: 1px dashed rgba(41, 86, 215, 0.32);
+  background:
+    linear-gradient(135deg, rgba(41, 86, 215, 0.08), transparent),
+    rgba(244, 247, 255, 0.75);
+  border-radius: 12px;
+  color: #35508f;
+  font-size: 0.95rem;
+}
+
+.page-preview__margins {
+  position: absolute;
+  color: rgba(23, 32, 51, 0.42);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.page-preview__margins--top {
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.page-preview__margins--right {
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%) rotate(90deg);
+}
+
+.page-preview__margins--bottom {
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.page-preview__margins--left {
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%) rotate(-90deg);
+}
+
+@media (max-width: 980px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .preview-stage {
+    min-height: 720px;
+  }
+
+  .preview-stage__header {
+    flex-direction: column;
+  }
+}

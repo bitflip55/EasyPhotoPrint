@@ -1,0 +1,24 @@
+[package]
+name = "easy-photo-print"
+version = "0.1.0"
+description = "A4 photo print utility for Linux"
+authors = ["bitflip"]
+edition = "2021"
+
+[lib]
+name = "easy_photo_print_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
