@@ -42,7 +42,10 @@ export function projectReducer(
         return state;
       }
 
-      images.splice(targetIndex, 0, movedImage);
+      const insertionIndex =
+        sourceIndex < targetIndex ? Math.max(0, targetIndex - 1) : targetIndex;
+
+      images.splice(insertionIndex, 0, movedImage);
 
       return {
         ...state,

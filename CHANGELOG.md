@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.19 - 2026-03-21
+
+- Added live in-list reorder preview while dragging, so image entries visibly shift before drop.
+
 ## 0.1.18 - 2026-03-21
 
 - Improved image reordering feedback with a floating drag preview under the cursor and clearer drop target highlighting.

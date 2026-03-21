@@ -72,6 +72,31 @@ export function ImageList({
     return <p className="empty-state">No images loaded yet.</p>;
   }
 
+  const displayedImages =
+    draggedId && dropTargetId && draggedId !== dropTargetId
+      ? (() => {
+          const previewImages = [...images];
+          const sourceIndex = previewImages.findIndex((image) => image.id === draggedId);
+          const targetIndex = previewImages.findIndex((image) => image.id === dropTargetId);
+
+          if (sourceIndex === -1 || targetIndex === -1) {
+            return images;
+          }
+
+          const [movedImage] = previewImages.splice(sourceIndex, 1);
+
+          if (!movedImage) {
+            return images;
+          }
+
+          const insertionIndex =
+            sourceIndex < targetIndex ? Math.max(0, targetIndex - 1) : targetIndex;
+
+          previewImages.splice(insertionIndex, 0, movedImage);
+          return previewImages;
+        })()
+      : images;
+
   function handlePointerDown(
     event: ReactPointerEvent<HTMLButtonElement>,
     imageId: string,
@@ -91,7 +116,7 @@ export function ImageList({
 
   return (
     <div className="image-list">
-      {images.map((image, index) => {
+      {displayedImages.map((image, index) => {
         const isVisibleOnCurrentPage =
           index >= visibleStartIndex && index < visibleStartIndex + visibleCount;
         const cellNumber = index - visibleStartIndex + 1;
