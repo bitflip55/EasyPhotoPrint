@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.20 - 2026-03-21
+
+- Replaced the custom image reordering implementation with a `dnd-kit` sortable list and drag overlay for more reliable, smoother reordering in the React/Tauri UI.
+
 ## 0.1.19 - 2026-03-21
 
 - Added live in-list reorder preview while dragging, so image entries visibly shift before drop.

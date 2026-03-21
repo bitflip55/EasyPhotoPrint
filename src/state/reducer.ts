@@ -41,11 +41,7 @@ export function projectReducer(
       if (!movedImage) {
         return state;
       }
-
-      const insertionIndex =
-        sourceIndex < targetIndex ? Math.max(0, targetIndex - 1) : targetIndex;
-
-      images.splice(insertionIndex, 0, movedImage);
+      images.splice(targetIndex, 0, movedImage);
 
       return {
         ...state,

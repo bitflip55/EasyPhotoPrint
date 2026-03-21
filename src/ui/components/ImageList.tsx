@@ -1,4 +1,21 @@
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useMemo, useState } from "react";
+
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragStartEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 import type { ImageItem } from "@/domain/model/types";
 
@@ -10,6 +27,104 @@ interface ImageListProps {
   onMove: (sourceId: string, targetId: string) => void;
 }
 
+interface ImageListItemProps {
+  image: ImageItem;
+  index: number;
+  visibleStartIndex: number;
+  visibleCount: number;
+  onRemove: (id: string) => void;
+}
+
+function ImageListCard({
+  image,
+  index,
+  visibleStartIndex,
+  visibleCount,
+  onRemove,
+  dragHandleProps,
+  isDragging = false,
+}: ImageListItemProps & {
+  dragHandleProps?: Record<string, unknown>;
+  isDragging?: boolean;
+}) {
+  const isVisibleOnCurrentPage =
+    index >= visibleStartIndex && index < visibleStartIndex + visibleCount;
+  const cellNumber = index - visibleStartIndex + 1;
+
+  return (
+    <article className={`image-list__item ${isDragging ? "is-dragging" : ""}`}>
+      <button
+        aria-label={`Reorder ${image.name}`}
+        className="image-list__drag-handle"
+        type="button"
+        {...dragHandleProps}
+      >
+        ::
+      </button>
+      <img alt={image.name} className="image-list__thumb" src={image.thumbnailUrl} />
+      <div className="image-list__meta">
+        <span className="image-list__order">#{index + 1}</span>
+        <strong title={image.name}>{image.name}</strong>
+        <span>
+          {image.dimensions.widthPx} x {image.dimensions.heightPx} px
+        </span>
+        <span
+          className={
+            isVisibleOnCurrentPage
+              ? "image-list__status"
+              : "image-list__status is-overflow"
+          }
+        >
+          {isVisibleOnCurrentPage ? `Cell ${cellNumber}` : "Not on this page"}
+        </span>
+      </div>
+      <button
+        className="button button--ghost"
+        type="button"
+        onClick={() => onRemove(image.id)}
+      >
+        Remove
+      </button>
+    </article>
+  );
+}
+
+function SortableImageListItem(props: ImageListItemProps) {
+  const { image } = props;
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: image.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      className={`image-list__sortable ${isDragging ? "is-sortable-dragging" : ""}`}
+      style={style}
+    >
+      <ImageListCard
+        {...props}
+        isDragging={isDragging}
+        dragHandleProps={{
+          ...attributes,
+          ...listeners,
+          ref: setActivatorNodeRef,
+        }}
+      />
+    </div>
+  );
+}
+
 export function ImageList({
   images,
   visibleStartIndex,
@@ -17,174 +132,79 @@ export function ImageList({
   onRemove,
   onMove,
 }: ImageListProps) {
-  const [draggedId, setDraggedId] = useState<string | null>(null);
-  const [dropTargetId, setDropTargetId] = useState<string | null>(null);
-  const [pointerPosition, setPointerPosition] = useState<{ x: number; y: number } | null>(null);
-  const dragSourceIdRef = useRef<string | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 6,
+      },
+    }),
+  );
 
-  useEffect(() => {
-    function handlePointerMove(event: PointerEvent) {
-      const sourceId = dragSourceIdRef.current;
-
-      if (!sourceId) {
-        return;
-      }
-
-      setPointerPosition({ x: event.clientX, y: event.clientY });
-
-      const element = document.elementFromPoint(event.clientX, event.clientY);
-      const itemElement = element?.closest<HTMLElement>("[data-image-id]");
-      const targetId = itemElement?.dataset.imageId ?? null;
-
-      if (targetId && targetId !== sourceId) {
-        setDropTargetId(targetId);
-      } else {
-        setDropTargetId(null);
-      }
-    }
-
-    function handlePointerUp() {
-      const sourceId = dragSourceIdRef.current;
-      const targetId = dropTargetId;
-
-      if (sourceId && targetId && sourceId !== targetId) {
-        onMove(sourceId, targetId);
-      }
-
-      dragSourceIdRef.current = null;
-      setDraggedId(null);
-      setDropTargetId(null);
-      setPointerPosition(null);
-      document.body.classList.remove("is-reordering-images");
-    }
-
-    window.addEventListener("pointermove", handlePointerMove);
-    window.addEventListener("pointerup", handlePointerUp);
-
-    return () => {
-      window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("pointerup", handlePointerUp);
-      document.body.classList.remove("is-reordering-images");
-    };
-  }, [dropTargetId, onMove]);
+  const activeImage = useMemo(
+    () => images.find((image) => image.id === activeId) ?? null,
+    [activeId, images],
+  );
 
   if (images.length === 0) {
     return <p className="empty-state">No images loaded yet.</p>;
   }
 
-  const displayedImages =
-    draggedId && dropTargetId && draggedId !== dropTargetId
-      ? (() => {
-          const previewImages = [...images];
-          const sourceIndex = previewImages.findIndex((image) => image.id === draggedId);
-          const targetIndex = previewImages.findIndex((image) => image.id === dropTargetId);
-
-          if (sourceIndex === -1 || targetIndex === -1) {
-            return images;
-          }
-
-          const [movedImage] = previewImages.splice(sourceIndex, 1);
-
-          if (!movedImage) {
-            return images;
-          }
-
-          const insertionIndex =
-            sourceIndex < targetIndex ? Math.max(0, targetIndex - 1) : targetIndex;
-
-          previewImages.splice(insertionIndex, 0, movedImage);
-          return previewImages;
-        })()
-      : images;
-
-  function handlePointerDown(
-    event: ReactPointerEvent<HTMLButtonElement>,
-    imageId: string,
-  ) {
-    event.preventDefault();
-    event.stopPropagation();
-    dragSourceIdRef.current = imageId;
-    setDraggedId(imageId);
-    setDropTargetId(null);
-    setPointerPosition({ x: event.clientX, y: event.clientY });
-    document.body.classList.add("is-reordering-images");
+  function handleDragStart(event: DragStartEvent) {
+    setActiveId(String(event.active.id));
   }
 
-  const draggedImage = draggedId
-    ? images.find((image) => image.id === draggedId) ?? null
-    : null;
+  function handleDragEnd(event: DragEndEvent) {
+    setActiveId(null);
+
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) {
+      return;
+    }
+
+    onMove(String(active.id), String(over.id));
+  }
 
   return (
-    <div className="image-list">
-      {displayedImages.map((image, index) => {
-        const isVisibleOnCurrentPage =
-          index >= visibleStartIndex && index < visibleStartIndex + visibleCount;
-        const cellNumber = index - visibleStartIndex + 1;
-        const isDragging = draggedId === image.id;
-        const isDropTarget = dropTargetId === image.id;
-
-        return (
-          <article
-            className={`image-list__item ${isDragging ? "is-dragging" : ""} ${isDropTarget ? "is-drop-target" : ""}`}
-            key={image.id}
-            data-image-id={image.id}
-          >
-            <button
-              aria-label={`Reorder ${image.name}`}
-              className="image-list__drag-handle"
-              type="button"
-              onPointerDown={(event) => handlePointerDown(event, image.id)}
-            >
-              ::
-            </button>
-            <img alt={image.name} className="image-list__thumb" src={image.thumbnailUrl} />
-            <div className="image-list__meta">
-              <span className="image-list__order">#{index + 1}</span>
-              <strong title={image.name}>{image.name}</strong>
-              <span>
-                {image.dimensions.widthPx} x {image.dimensions.heightPx} px
-              </span>
-              <span
-                className={
-                  isVisibleOnCurrentPage
-                    ? "image-list__status"
-                    : "image-list__status is-overflow"
-                }
-              >
-                {isVisibleOnCurrentPage ? `Cell ${cellNumber}` : "Not on this page"}
-              </span>
-            </div>
-            <button
-              className="button button--ghost"
-              type="button"
-              onClick={() => onRemove(image.id)}
-            >
-              Remove
-            </button>
-          </article>
-        );
-      })}
-      {draggedImage && pointerPosition ? (
-        <div
-          className="image-list__drag-preview"
-          style={{
-            left: pointerPosition.x + 18,
-            top: pointerPosition.y + 18,
-          }}
-        >
-          <img
-            alt={draggedImage.name}
-            className="image-list__drag-preview-thumb"
-            src={draggedImage.thumbnailUrl}
-          />
-          <div className="image-list__drag-preview-meta">
-            <strong title={draggedImage.name}>{draggedImage.name}</strong>
-            <span>
-              {draggedImage.dimensions.widthPx} x {draggedImage.dimensions.heightPx} px
-            </span>
-          </div>
+    <DndContext
+      collisionDetection={closestCenter}
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDragCancel={() => setActiveId(null)}
+    >
+      <SortableContext
+        items={images.map((image) => image.id)}
+        strategy={verticalListSortingStrategy}
+      >
+        <div className="image-list">
+          {images.map((image, index) => (
+            <SortableImageListItem
+              key={image.id}
+              image={image}
+              index={index}
+              visibleStartIndex={visibleStartIndex}
+              visibleCount={visibleCount}
+              onRemove={onRemove}
+            />
+          ))}
         </div>
-      ) : null}
-    </div>
+      </SortableContext>
+      <DragOverlay>
+        {activeImage ? (
+          <div className="image-list__drag-overlay">
+            <ImageListCard
+              image={activeImage}
+              index={images.findIndex((image) => image.id === activeImage.id)}
+              visibleStartIndex={visibleStartIndex}
+              visibleCount={visibleCount}
+              onRemove={onRemove}
+              isDragging
+            />
+          </div>
+        ) : null}
+      </DragOverlay>
+    </DndContext>
   );
 }
