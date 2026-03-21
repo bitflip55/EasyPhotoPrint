@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type DragEvent } from "react";
 
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import packageJson from "../../package.json";
 
 import { createDefaultProjectDocument } from "@/state/defaults";
@@ -153,6 +154,49 @@ export function App() {
         );
       }
     })();
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!isDesktopApp()) {
+      return;
+    }
+
+    let unlisten: (() => void) | undefined;
+
+    void (async () => {
+      unlisten = await getCurrentWindow().onDragDropEvent(async (event) => {
+        if (event.payload.type === "enter" || event.payload.type === "over") {
+          setIsDragActive(true);
+          return;
+        }
+
+        if (event.payload.type === "leave") {
+          dragDepthRef.current = 0;
+          setIsDragActive(false);
+          return;
+        }
+
+        if (event.payload.type === "drop") {
+          dragDepthRef.current = 0;
+          setIsDragActive(false);
+
+          try {
+            const images = await pathsToImageItems(event.payload.paths);
+            dispatch({ type: "images/add", payload: images });
+            setImportStatusMessage(`${images.length} image(s) loaded.`);
+          } catch (error) {
+            console.error("Desktop drag and drop import failed", error);
+            setImportStatusMessage(
+              formatErrorMessage(error, "Dropped images could not be loaded."),
+            );
+          }
+        }
+      });
+    })();
+
+    return () => {
+      unlisten?.();
+    };
   }, [dispatch]);
 
   async function handleAddFiles(files: FileList | File[]) {
