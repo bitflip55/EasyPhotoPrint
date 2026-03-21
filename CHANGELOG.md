@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.16 - 2026-03-21
+
+- Added drag reordering in the image list and fixed the interaction between internal reordering drags and app-wide file drop handling.
+
 ## 0.1.15 - 2026-03-21
 
 - Fixed desktop file drag and drop by listening to native Tauri window drag-drop events in addition to the webview drop handlers.
