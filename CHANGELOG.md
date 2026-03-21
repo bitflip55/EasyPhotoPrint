@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.15 - 2026-03-21
+
+- Fixed desktop file drag and drop by listening to native Tauri window drag-drop events in addition to the webview drop handlers.
+
 ## 0.1.14 - 2026-03-21
 
 - Added drag and drop image import across the app window with a visual drop overlay.
