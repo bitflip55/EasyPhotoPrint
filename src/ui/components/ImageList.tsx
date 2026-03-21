@@ -19,6 +19,7 @@ export function ImageList({
 }: ImageListProps) {
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dropTargetId, setDropTargetId] = useState<string | null>(null);
+  const [pointerPosition, setPointerPosition] = useState<{ x: number; y: number } | null>(null);
   const dragSourceIdRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -28,6 +29,8 @@ export function ImageList({
       if (!sourceId) {
         return;
       }
+
+      setPointerPosition({ x: event.clientX, y: event.clientY });
 
       const element = document.elementFromPoint(event.clientX, event.clientY);
       const itemElement = element?.closest<HTMLElement>("[data-image-id]");
@@ -51,6 +54,7 @@ export function ImageList({
       dragSourceIdRef.current = null;
       setDraggedId(null);
       setDropTargetId(null);
+      setPointerPosition(null);
       document.body.classList.remove("is-reordering-images");
     }
 
@@ -77,8 +81,13 @@ export function ImageList({
     dragSourceIdRef.current = imageId;
     setDraggedId(imageId);
     setDropTargetId(null);
+    setPointerPosition({ x: event.clientX, y: event.clientY });
     document.body.classList.add("is-reordering-images");
   }
+
+  const draggedImage = draggedId
+    ? images.find((image) => image.id === draggedId) ?? null
+    : null;
 
   return (
     <div className="image-list">
@@ -130,6 +139,27 @@ export function ImageList({
           </article>
         );
       })}
+      {draggedImage && pointerPosition ? (
+        <div
+          className="image-list__drag-preview"
+          style={{
+            left: pointerPosition.x + 18,
+            top: pointerPosition.y + 18,
+          }}
+        >
+          <img
+            alt={draggedImage.name}
+            className="image-list__drag-preview-thumb"
+            src={draggedImage.thumbnailUrl}
+          />
+          <div className="image-list__drag-preview-meta">
+            <strong title={draggedImage.name}>{draggedImage.name}</strong>
+            <span>
+              {draggedImage.dimensions.widthPx} x {draggedImage.dimensions.heightPx} px
+            </span>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

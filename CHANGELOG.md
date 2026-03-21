@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.18 - 2026-03-21
+
+- Improved image reordering feedback with a floating drag preview under the cursor and clearer drop target highlighting.
+
 ## 0.1.17 - 2026-03-21
 
 - Replaced HTML5 drag reordering with a pointer-based reorder handle for more reliable image reordering in the desktop app.
