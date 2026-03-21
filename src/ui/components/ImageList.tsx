@@ -9,6 +9,7 @@ import {
   useSensors,
   type DragEndEvent,
   type DragStartEvent,
+  type Modifier,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -18,6 +19,12 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 
 import type { ImageItem } from "@/domain/model/types";
+
+const dragOverlayOffset: Modifier = ({ transform }) => ({
+  ...transform,
+  x: transform.x - 18,
+  y: transform.y - 28,
+});
 
 interface ImageListProps {
   images: ImageItem[];
@@ -198,7 +205,7 @@ export function ImageList({
           ))}
         </div>
       </SortableContext>
-      <DragOverlay>
+      <DragOverlay modifiers={[dragOverlayOffset]}>
         {activeImage ? (
           <div className="image-list__drag-overlay">
             <ImageListCard

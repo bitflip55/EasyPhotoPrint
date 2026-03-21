@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.23 - 2026-03-21
+
+- Moved the image reorder drag overlay offset into a real `dnd-kit` overlay modifier so the grabbed card tracks the mouse pointer more accurately.
+
 ## 0.1.22 - 2026-03-21
 
 - Adjusted the image reorder drag overlay offset so the grabbed item tracks closer to the mouse pointer.

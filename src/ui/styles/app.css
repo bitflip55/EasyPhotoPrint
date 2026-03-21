@@ -466,7 +466,6 @@ select:disabled {
   pointer-events: none;
   box-shadow: 0 24px 54px rgba(7, 10, 30, 0.46);
   border-radius: 16px;
-  transform: translate(-18px, -16px);
 }
 
 .image-list__thumb {
