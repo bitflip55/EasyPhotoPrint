@@ -37,17 +37,18 @@ export function PreviewStage({
   onNextPage,
 }: PreviewStageProps) {
   const pageAspectRatio = `${layoutPage.widthMm} / ${layoutPage.heightMm}`;
+  const previewTitle = `${layoutPage.settings.page.format} Live Preview`;
 
   return (
     <section className="preview-stage">
       <header className="preview-stage__header">
         <div>
           <p className="eyebrow">Preview</p>
-          <h2>A4 Live Vorschau</h2>
+          <h2>{previewTitle}</h2>
         </div>
         <div className="preview-stage__toolbar">
           <p className="preview-stage__caption">
-            Seite {renderPage.pageIndex + 1} von {renderPage.pageCount}
+            Page {renderPage.pageIndex + 1} of {renderPage.pageCount}
           </p>
           <div className="action-row">
             <button
@@ -56,7 +57,7 @@ export function PreviewStage({
               onClick={onPreviousPage}
               disabled={!canGoToPreviousPage}
             >
-              Zurueck
+              Back
             </button>
             <button
               className="button"
@@ -64,7 +65,7 @@ export function PreviewStage({
               onClick={onNextPage}
               disabled={!canGoToNextPage}
             >
-              Weiter
+              Next
             </button>
           </div>
         </div>
@@ -148,7 +149,7 @@ export function PreviewStage({
                     />
                   </div>
                 ) : (
-                  <span>Leer</span>
+                  <span>Empty</span>
                 )}
               </div>
             ))}

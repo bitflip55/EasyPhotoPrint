@@ -1,6 +1,6 @@
 [package]
 name = "easy-photo-print"
-version = "0.1.3"
+version = "0.1.4"
 description = "Linux desktop app for photo layout, PDF export and printing"
 authors = ["bitflip"]
 homepage = "https://github.com/bitflip55/EasyPhotoPrint"

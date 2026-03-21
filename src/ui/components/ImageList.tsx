@@ -14,7 +14,7 @@ export function ImageList({
   onRemove,
 }: ImageListProps) {
   if (images.length === 0) {
-    return <p className="empty-state">Noch keine Bilder geladen.</p>;
+    return <p className="empty-state">No images loaded yet.</p>;
   }
 
   return (
@@ -39,7 +39,7 @@ export function ImageList({
                     : "image-list__status is-overflow"
                 }
               >
-                {isVisibleOnCurrentPage ? `Zelle ${cellNumber}` : "Nicht auf dieser Seite"}
+                {isVisibleOnCurrentPage ? `Cell ${cellNumber}` : "Not on this page"}
               </span>
             </div>
             <button
@@ -47,7 +47,7 @@ export function ImageList({
               type="button"
               onClick={() => onRemove(image.id)}
             >
-              Entfernen
+              Remove
             </button>
           </article>
         );

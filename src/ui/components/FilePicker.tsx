@@ -5,7 +5,7 @@ interface FilePickerProps {
 export function FilePicker({ onRequestSelect }: FilePickerProps) {
   return (
     <button className="button button--primary" type="button" onClick={onRequestSelect}>
-      Bilder hinzufügen
+      Add images
     </button>
   );
 }

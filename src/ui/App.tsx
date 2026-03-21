@@ -19,6 +19,12 @@ import {
 import { ImageSidebar, Sidebar } from "@/ui/components/Sidebar";
 import { PreviewStage } from "@/ui/components/PreviewStage";
 
+interface UpdatePanelState {
+  isUpdateAvailable: boolean;
+  message: string;
+  releasePageUrl: string;
+}
+
 function formatErrorMessage(error: unknown, fallback: string): string {
   if (error instanceof Error && error.message.trim().length > 0) {
     return `${fallback} ${error.message}`;
@@ -51,9 +57,11 @@ export function App() {
   const [importStatusMessage, setImportStatusMessage] = useState<string | null>(null);
   const [actionStatusMessage, setActionStatusMessage] = useState<string | null>(null);
   const [previewPageIndex, setPreviewPageIndex] = useState(0);
-  const [updateStatusMessage, setUpdateStatusMessage] = useState(
-    `Version ${getCurrentAppVersion()} installiert. Update-Check läuft...`,
-  );
+  const [updatePanelState, setUpdatePanelState] = useState<UpdatePanelState>({
+    isUpdateAvailable: false,
+    message: `Version ${getCurrentAppVersion()} installed. Checking for updates...`,
+    releasePageUrl: getReleaseDownloadsPageUrl(),
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previousImagesRef = useRef(project.images);
 
@@ -91,15 +99,25 @@ export function App() {
       const result = await checkForLatestRelease();
 
       if (result.isUpdateAvailable) {
-        setUpdateStatusMessage(
-          `Neue Version ${result.latestVersion} verfügbar. Installiert ist ${result.currentVersion}.`,
-        );
+        setUpdatePanelState({
+          isUpdateAvailable: true,
+          message: `Version ${result.latestVersion} is available. Installed: ${result.currentVersion}.`,
+          releasePageUrl: result.releasePageUrl,
+        });
       } else {
-        setUpdateStatusMessage(`Version ${result.currentVersion} ist aktuell.`);
+        setUpdatePanelState({
+          isUpdateAvailable: false,
+          message: `Version ${result.currentVersion} is up to date.`,
+          releasePageUrl: result.releasePageUrl,
+        });
       }
     } catch (error) {
       console.error("Update check failed", error);
-      setUpdateStatusMessage(formatErrorMessage(error, "Update-Check fehlgeschlagen."));
+      setUpdatePanelState({
+        isUpdateAvailable: false,
+        message: formatErrorMessage(error, "Update check failed."),
+        releasePageUrl: getReleaseDownloadsPageUrl(),
+      });
     }
   }
 
@@ -111,10 +129,10 @@ export function App() {
     try {
       const images = await filesToImageItems(files);
       dispatch({ type: "images/add", payload: images });
-      setImportStatusMessage(`${images.length} Bild(er) geladen.`);
+      setImportStatusMessage(`${images.length} image(s) loaded.`);
     } catch (error) {
       console.error("Image import failed", error);
-      setImportStatusMessage(formatErrorMessage(error, "Bilder konnten nicht geladen werden."));
+      setImportStatusMessage(formatErrorMessage(error, "Images could not be loaded."));
     }
   }
 
@@ -139,10 +157,10 @@ export function App() {
         const selectedPaths = Array.isArray(selected) ? selected : [selected];
         const images = await pathsToImageItems(selectedPaths);
         dispatch({ type: "images/add", payload: images });
-        setImportStatusMessage(`${images.length} Bild(er) geladen.`);
+        setImportStatusMessage(`${images.length} image(s) loaded.`);
       } catch (error) {
         console.error("Desktop image import failed", error);
-        setImportStatusMessage(formatErrorMessage(error, "Bilder konnten nicht geladen werden."));
+        setImportStatusMessage(formatErrorMessage(error, "Images could not be loaded."));
       }
 
       return;
@@ -158,12 +176,12 @@ export function App() {
 
       if (exportResult === "saved") {
         setActionStatusMessage(
-          `PDF mit ${renderDocument.pages.length} Seite(n) wurde exportiert.`,
+          `PDF with ${renderDocument.pages.length} page(s) was exported.`,
         );
       }
     } catch (error) {
       console.error("PDF export failed", error);
-      setActionStatusMessage(formatErrorMessage(error, "PDF konnte nicht exportiert werden."));
+      setActionStatusMessage(formatErrorMessage(error, "PDF could not be exported."));
     }
   }
 
@@ -171,11 +189,11 @@ export function App() {
     try {
       await printRenderDocument(renderDocument, project.settings.printCopies);
       setActionStatusMessage(
-        `Druck mit ${project.settings.printCopies} Exemplar(en) wurde uebergeben.`,
+        `Print job with ${project.settings.printCopies} cop${project.settings.printCopies === 1 ? "y" : "ies"} was submitted.`,
       );
     } catch (error) {
       console.error("Print failed", error);
-      setActionStatusMessage(formatErrorMessage(error, "Druck konnte nicht gestartet werden."));
+      setActionStatusMessage(formatErrorMessage(error, "Printing could not be started."));
     }
   }
 
@@ -221,15 +239,16 @@ export function App() {
               payload: createDefaultProjectDocument(),
             });
             setImportStatusMessage(null);
-            setActionStatusMessage("Projekt wurde zurückgesetzt.");
+            setActionStatusMessage("Project was reset.");
           }}
           onExportPdf={() => void handleExportPdf()}
           onPrint={() => void handlePrint()}
           importStatusMessage={importStatusMessage}
           actionStatusMessage={actionStatusMessage}
           updatePanel={{
-            message: updateStatusMessage,
-            onOpenReleasePage: () => void openExternalUrl(getReleaseDownloadsPageUrl()),
+            message: updatePanelState.message,
+            isUpdateAvailable: updatePanelState.isUpdateAvailable,
+            onOpenReleasePage: () => void openExternalUrl(updatePanelState.releasePageUrl),
           }}
         />
       </aside>

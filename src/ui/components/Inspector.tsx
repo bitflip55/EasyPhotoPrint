@@ -55,7 +55,7 @@ function PrintCopiesControl({
   onChange: (value: number) => void;
 }) {
   return (
-    <div className="print-copies-control" aria-label="Druckexemplare">
+    <div className="print-copies-control" aria-label="Print copies">
       <button
         className="button button--ghost print-copies-control__button"
         type="button"
@@ -63,7 +63,7 @@ function PrintCopiesControl({
       >
         -
       </button>
-      <div className="print-copies-control__value" title="Druckexemplare">
+      <div className="print-copies-control__value" title="Print copies">
         <strong>{value}</strong>
         <span>x</span>
       </div>
@@ -95,18 +95,18 @@ export function Inspector({
       <section className="panel">
         <div className="panel__header">
           <p className="eyebrow">Layout</p>
-          <h2>Seite und Raster</h2>
+          <h2>Page and grid</h2>
         </div>
         <div className="field-grid field-grid--two">
           <NumberField
-            label="Reihen"
+            label="Rows"
             value={settings.grid.rows}
             min={1}
             max={12}
             onChange={(rows) => onDispatch({ type: "settings/updateGrid", payload: { rows } })}
           />
           <NumberField
-            label="Spalten"
+            label="Columns"
             value={settings.grid.columns}
             min={1}
             max={12}
@@ -150,7 +150,7 @@ export function Inspector({
             </select>
           </label>
           <label className="field">
-            <span>Ausrichtung</span>
+            <span>Orientation</span>
             <select
               value={settings.page.orientation}
               onChange={(event) =>
@@ -160,8 +160,8 @@ export function Inspector({
                 })
               }
             >
-              <option value="portrait">Hochformat</option>
-              <option value="landscape">Querformat</option>
+              <option value="portrait">Portrait</option>
+              <option value="landscape">Landscape</option>
             </select>
           </label>
         </div>
@@ -169,12 +169,12 @@ export function Inspector({
 
       <section className="panel">
         <div className="panel__header">
-          <p className="eyebrow">Abstände</p>
-          <h2>Ränder und Gaps</h2>
+          <p className="eyebrow">Spacing</p>
+          <h2>Margins and gaps</h2>
         </div>
         <div className="field-grid field-grid--two">
           <NumberField
-            label="Rand oben"
+            label="Top margin"
             value={settings.page.margins.topMm}
             min={0}
             max={80}
@@ -184,7 +184,7 @@ export function Inspector({
             }
           />
           <NumberField
-            label="Rand unten"
+            label="Bottom margin"
             value={settings.page.margins.bottomMm}
             min={0}
             max={80}
@@ -194,7 +194,7 @@ export function Inspector({
             }
           />
           <NumberField
-            label="Rand links"
+            label="Left margin"
             value={settings.page.margins.leftMm}
             min={0}
             max={80}
@@ -204,7 +204,7 @@ export function Inspector({
             }
           />
           <NumberField
-            label="Rand rechts"
+            label="Right margin"
             value={settings.page.margins.rightMm}
             min={0}
             max={80}
@@ -214,7 +214,7 @@ export function Inspector({
             }
           />
           <NumberField
-            label="Gap horizontal"
+            label="Horizontal gap"
             value={settings.page.spacing.horizontalMm}
             min={0}
             max={40}
@@ -224,7 +224,7 @@ export function Inspector({
             }
           />
           <NumberField
-            label="Gap vertikal"
+            label="Vertical gap"
             value={settings.page.spacing.verticalMm}
             min={0}
             max={40}
@@ -238,12 +238,12 @@ export function Inspector({
 
       <section className="panel">
         <div className="panel__header">
-          <p className="eyebrow">Bildmodus</p>
-          <h2>Platzierung</h2>
+          <p className="eyebrow">Image mode</p>
+          <h2>Placement</h2>
         </div>
         <div className="field-grid field-grid--two">
           <label className="field">
-            <span>Modus</span>
+            <span>Mode</span>
             <select
               value={settings.placementMode}
               onChange={(event) =>
@@ -258,7 +258,7 @@ export function Inspector({
             </select>
           </label>
           <label className="field">
-            <span>Zentrieren</span>
+            <span>Centering</span>
             <button
               className={
                 settings.centerImages
@@ -277,29 +277,29 @@ export function Inspector({
               <span className="toggle-button__track">
                 <span className="toggle-button__thumb" />
               </span>
-              <span>{settings.centerImages ? "Ein" : "Aus"}</span>
+              <span>{settings.centerImages ? "On" : "Off"}</span>
             </button>
           </label>
         </div>
         <p className="notice">
           {totalImageCount === 0
-            ? "Noch keine Bilder geladen."
-            : `${totalImageCount} Bild(er) auf ${pageCount} Seite(n).`}
+            ? "No images loaded yet."
+            : `${totalImageCount} image(s) across ${pageCount} page(s).`}
         </p>
       </section>
 
       <section className="panel">
         <div className="panel__header">
-          <p className="eyebrow">Aktionen</p>
-          <h2>Export und Reset</h2>
+          <p className="eyebrow">Actions</p>
+          <h2>Export and reset</h2>
         </div>
         <div className="action-stack">
           <button className="button" type="button" onClick={onExportPdf}>
-            PDF exportieren
+            Export PDF
           </button>
           <div className="print-action-row">
             <button className="button" type="button" onClick={onPrint}>
-              Drucken
+              Print
             </button>
             <PrintCopiesControl
               value={settings.printCopies}
@@ -309,7 +309,7 @@ export function Inspector({
             />
           </div>
           <button className="button button--ghost" type="button" onClick={onReset}>
-            Projekt zurücksetzen
+            Reset project
           </button>
         </div>
         {actionStatusMessage ? <p className="notice notice--action">{actionStatusMessage}</p> : null}

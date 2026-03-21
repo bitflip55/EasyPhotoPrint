@@ -18,6 +18,7 @@ interface SidebarProps {
   actionStatusMessage: string | null;
   updatePanel: {
     message: string;
+    isUpdateAvailable: boolean;
     onOpenReleasePage: () => void;
   };
 }
@@ -40,7 +41,7 @@ export function Sidebar(props: SidebarProps) {
     <div className="panel-stack">
       <section className="panel">
         <div className="panel__header">
-          <p className="eyebrow">Bilder</p>
+          <p className="eyebrow">Images</p>
           <h2>Import</h2>
         </div>
         <div className="action-row">
@@ -63,12 +64,12 @@ export function Sidebar(props: SidebarProps) {
       <section className="panel panel--footer">
         <div className="panel__header">
           <p className="eyebrow">Updates</p>
-          <h2>Versionen</h2>
+          <h2>Versions</h2>
         </div>
         <p className="notice">{updatePanel.message}</p>
         <div className="action-row">
           <button className="button" type="button" onClick={updatePanel.onOpenReleasePage}>
-            Releases öffnen
+            {updatePanel.isUpdateAvailable ? "Update now" : "Open releases"}
           </button>
         </div>
       </section>
@@ -92,8 +93,8 @@ export function ImageSidebar({
   return (
     <section className="panel image-sidebar">
       <div className="panel__header">
-        <p className="eyebrow">Bilder</p>
-        <h2>Lokale Auswahl</h2>
+        <p className="eyebrow">Images</p>
+        <h2>Local selection</h2>
       </div>
       <ImageList
         images={project.images}

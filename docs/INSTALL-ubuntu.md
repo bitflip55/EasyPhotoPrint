@@ -3,16 +3,16 @@
 ## Download
 
 - [Release page](https://github.com/bitflip55/EasyPhotoPrint/releases)
-- [Direct `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.3/Easy.Photo.Print_0.1.3_amd64.deb)
-- [Direct `.rpm` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.3/Easy.Photo.Print-0.1.3-1.x86_64.rpm)
+- [Direct `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.4/Easy.Photo.Print_0.1.4_amd64.deb)
+- [Direct `.rpm` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.4/Easy.Photo.Print-0.1.4-1.x86_64.rpm)
 
 ## Install On Ubuntu
 
 Download and install the `.deb` package with `apt`:
 
 ```bash
-wget "https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.3/Easy.Photo.Print_0.1.3_amd64.deb"
-sudo apt install "./Easy.Photo.Print_0.1.3_amd64.deb"
+wget "https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.4/Easy.Photo.Print_0.1.4_amd64.deb"
+sudo apt install "./Easy.Photo.Print_0.1.4_amd64.deb"
 ```
 
 `apt` resolves the package dependencies automatically on a normal Ubuntu system.
@@ -40,7 +40,7 @@ lpstat -p -d
 ## Quick Check
 
 1. App starts.
-2. Bilder lassen sich lokal laden.
-3. Mehrseiten-Vorschau funktioniert.
-4. PDF-Export funktioniert.
-5. Drucken mit mehreren Exemplaren funktioniert.
+2. Local image import works.
+3. Multi-page preview works.
+4. PDF export works.
+5. Printing with multiple copies works.
