@@ -3,8 +3,8 @@
 ## Download
 
 - [Release page](https://github.com/bitflip55/EasyPhotoPrint/releases)
-- [Direct `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.1/Easy.Photo.Print_0.1.1_amd64.deb)
-- [Direct `.rpm` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.1/Easy.Photo.Print-0.1.1-1.x86_64.rpm)
+- [Direct `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.2/Easy.Photo.Print_0.1.2_amd64.deb)
+- [Direct `.rpm` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.2/Easy.Photo.Print-0.1.2-1.x86_64.rpm)
 
 ## Install On Ubuntu
 
@@ -25,8 +25,8 @@ sudo apt install -y \
 Download and install the `.deb` package:
 
 ```bash
-wget "https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.1/Easy.Photo.Print_0.1.1_amd64.deb"
-sudo apt install "./Easy.Photo.Print_0.1.1_amd64.deb"
+wget "https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.2/Easy.Photo.Print_0.1.2_amd64.deb"
+sudo apt install "./Easy.Photo.Print_0.1.2_amd64.deb"
 ```
 
 ## Start The App
