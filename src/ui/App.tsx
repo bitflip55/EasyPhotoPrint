@@ -110,7 +110,7 @@ export function App() {
         setUpdatePanelState({
           isUpdateAvailable: false,
           message: `Version ${result.currentVersion} is up to date.`,
-          releasePageUrl: result.releasePageUrl,
+          releasePageUrl: getReleaseDownloadsPageUrl(),
         });
       }
     } catch (error) {
