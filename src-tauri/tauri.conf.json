@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Easy Photo Print",
-  "version": "0.1.6",
+  "productName": "EasyPhotoPrint",
+  "version": "0.1.7",
   "identifier": "com.bitflip.easyphotoprint",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Easy Photo Print",
+        "title": "EasyPhotoPrint",
         "label": "main",
         "width": 1400,
         "height": 920,
@@ -37,7 +37,7 @@
     "homepage": "https://github.com/bitflip55/EasyPhotoPrint",
     "category": "Graphics and Design",
     "shortDescription": "A lightweight modern photo layout and print app for Linux, inspired by classic tools such as PhotoPrint.",
-    "longDescription": "Easy Photo Print is a lightweight modern photo layout and print app for Linux, inspired by classic tools such as PhotoPrint, with configurable formats, grids, margins, spacing, multi-page PDF export and system printing.",
+    "longDescription": "EasyPhotoPrint is a lightweight modern photo layout and print app for Linux, inspired by classic tools such as PhotoPrint, with configurable formats, grids, margins, spacing, multi-page PDF export and system printing.",
     "icon": [
       "icons/32x32.png",
       "icons/64x64.png",

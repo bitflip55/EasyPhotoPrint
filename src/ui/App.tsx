@@ -230,7 +230,7 @@ export function App() {
     <div className="app-shell">
       <header className="app-shell__header">
         <div>
-          <h1>Easy Photo Print</h1>
+          <h1>EasyPhotoPrint</h1>
           <p className="app-shell__meta">
             v{packageJson.version} by{" "}
             <button

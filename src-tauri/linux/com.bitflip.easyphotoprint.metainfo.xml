@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
   <id>com.bitflip.easyphotoprint</id>
-  <name>Easy Photo Print</name>
+  <name>EasyPhotoPrint</name>
   <summary>A lightweight modern photo layout and print app for Linux</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>Proprietary</project_license>
   <developer id="bitflip55">
     <name>bitflip55</name>
   </developer>
-  <launchable type="desktop-id">Easy Photo Print.desktop</launchable>
+  <launchable type="desktop-id">EasyPhotoPrint.desktop</launchable>
   <categories>
     <category>Graphics</category>
     <category>Photography</category>
   </categories>
   <description>
     <p>
-      Easy Photo Print is a lightweight modern photo layout and print app for Linux,
+      EasyPhotoPrint is a lightweight modern photo layout and print app for Linux,
       inspired by classic tools such as PhotoPrint.
     </p>
     <p>

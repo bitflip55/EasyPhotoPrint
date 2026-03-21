@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.7 - 2026-03-21
+
+- Changed the visible product name to `EasyPhotoPrint` for more consistent package manager presentation.
+- Updated Linux metadata and UI strings to use the compact product name.
+
 ## 0.1.6 - 2026-03-21
 
 - Added Linux AppStream metainfo metadata for better package manager presentation.
