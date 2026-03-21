@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.2.1 - 2026-03-21
+
+- Fixed Windows release builds to use the GUI subsystem so no extra black console window opens beside the app.
+- Limited file registration so the app does not aggressively register as a direct image-file opener across platforms.
+- Added a manual Windows MSI build workflow on `develop` for quick test builds without cutting a release.
+
 ## 0.2.0 - 2026-03-21
 
 - Introduced the new branch model: `develop` for fast integration and `main` for stable beta releases.
