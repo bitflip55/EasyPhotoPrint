@@ -19,6 +19,36 @@ export function projectReducer(
         ...state,
         images: state.images.filter((image) => image.id !== action.payload.id),
       };
+    case "images/move": {
+      const sourceIndex = state.images.findIndex(
+        (image) => image.id === action.payload.sourceId,
+      );
+      const targetIndex = state.images.findIndex(
+        (image) => image.id === action.payload.targetId,
+      );
+
+      if (
+        sourceIndex === -1 ||
+        targetIndex === -1 ||
+        sourceIndex === targetIndex
+      ) {
+        return state;
+      }
+
+      const images = [...state.images];
+      const [movedImage] = images.splice(sourceIndex, 1);
+
+      if (!movedImage) {
+        return state;
+      }
+
+      images.splice(targetIndex, 0, movedImage);
+
+      return {
+        ...state,
+        images,
+      };
+    }
     case "settings/updateGrid":
       return {
         ...state,

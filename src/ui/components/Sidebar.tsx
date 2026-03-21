@@ -63,6 +63,7 @@ interface ImageSidebarProps {
   visibleStartIndex: number;
   placedImageCount: number;
   onRemoveImage: (id: string) => void;
+  onMoveImage: (sourceId: string, targetId: string) => void;
 }
 
 export function ImageSidebar({
@@ -70,6 +71,7 @@ export function ImageSidebar({
   visibleStartIndex,
   placedImageCount,
   onRemoveImage,
+  onMoveImage,
 }: ImageSidebarProps) {
   return (
     <section className="panel image-sidebar">
@@ -82,6 +84,7 @@ export function ImageSidebar({
         visibleStartIndex={visibleStartIndex}
         visibleCount={placedImageCount}
         onRemove={onRemoveImage}
+        onMove={onMoveImage}
       />
     </section>
   );

@@ -427,6 +427,23 @@ select:disabled {
   padding: 10px;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.08);
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease,
+    opacity 140ms ease;
+  border: 1px solid transparent;
+  cursor: grab;
+}
+
+.image-list__item.is-dragging {
+  opacity: 0.55;
+  transform: scale(0.985);
+}
+
+.image-list__item.is-drop-target {
+  border-color: rgba(122, 243, 224, 0.5);
+  background: rgba(122, 243, 224, 0.12);
 }
 
 .image-list__thumb {
@@ -453,6 +470,14 @@ select:disabled {
 .image-list__meta span {
   color: var(--text-soft);
   font-size: 0.86rem;
+}
+
+.image-list__order {
+  color: #7af3e0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .image-list__status.is-overflow {

@@ -13,6 +13,7 @@ export type ProjectAction =
   | { type: "project/reset"; payload: ProjectDocument }
   | { type: "images/add"; payload: ImageItem[] }
   | { type: "images/remove"; payload: { id: string } }
+  | { type: "images/move"; payload: { sourceId: string; targetId: string } }
   | { type: "settings/updateGrid"; payload: Partial<GridSettings> }
   | { type: "settings/updateMargins"; payload: Partial<Margins> }
   | { type: "settings/updateSpacing"; payload: Partial<Spacing> }
