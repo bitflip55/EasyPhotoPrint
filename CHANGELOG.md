@@ -2,11 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## 0.2.0-beta.1 - 2026-03-21
+## 0.2.0-beta.2 - 2026-03-21
 
 - Introduced the new branch model: `develop` for fast integration and `main` for stable beta releases.
 - Added pinned GitHub Actions workflows: fast Linux `.deb` CI on `develop`, and tag-based Linux/Windows/macOS publishing on `main`.
 - Documented current release-channel behavior and ARM-only macOS release support.
+- Switched the internal app/package version to an MSI-compatible numeric prerelease scheme for cross-platform beta publishing.
 
 ## 0.1.24 - 2026-03-21
 
