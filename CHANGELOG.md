@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.17 - 2026-03-21
+
+- Replaced HTML5 drag reordering with a pointer-based reorder handle for more reliable image reordering in the desktop app.
+
 ## 0.1.16 - 2026-03-21
 
 - Added drag reordering in the image list and fixed the interaction between internal reordering drags and app-wide file drop handling.
