@@ -49,44 +49,6 @@
       "icons/icon.png",
       "icons/512x512.png"
     ],
-    "fileAssociations": [
-      {
-        "ext": [
-          "png"
-        ],
-        "mimeType": "image/png",
-        "name": "PNG Image"
-      },
-      {
-        "ext": [
-          "jpg",
-          "jpeg"
-        ],
-        "mimeType": "image/jpeg",
-        "name": "JPEG Image"
-      },
-      {
-        "ext": [
-          "webp"
-        ],
-        "mimeType": "image/webp",
-        "name": "WebP Image"
-      },
-      {
-        "ext": [
-          "gif"
-        ],
-        "mimeType": "image/gif",
-        "name": "GIF Image"
-      },
-      {
-        "ext": [
-          "bmp"
-        ],
-        "mimeType": "image/bmp",
-        "name": "Bitmap Image"
-      }
-    ],
     "linux": {
       "deb": {
         "section": "graphics",
