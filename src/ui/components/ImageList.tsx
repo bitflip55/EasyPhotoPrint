@@ -1,4 +1,4 @@
-import { useState, type DragEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 
 import type { ImageItem } from "@/domain/model/types";
 
@@ -19,41 +19,65 @@ export function ImageList({
 }: ImageListProps) {
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dropTargetId, setDropTargetId] = useState<string | null>(null);
+  const dragSourceIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    function handlePointerMove(event: PointerEvent) {
+      const sourceId = dragSourceIdRef.current;
+
+      if (!sourceId) {
+        return;
+      }
+
+      const element = document.elementFromPoint(event.clientX, event.clientY);
+      const itemElement = element?.closest<HTMLElement>("[data-image-id]");
+      const targetId = itemElement?.dataset.imageId ?? null;
+
+      if (targetId && targetId !== sourceId) {
+        setDropTargetId(targetId);
+      } else {
+        setDropTargetId(null);
+      }
+    }
+
+    function handlePointerUp() {
+      const sourceId = dragSourceIdRef.current;
+      const targetId = dropTargetId;
+
+      if (sourceId && targetId && sourceId !== targetId) {
+        onMove(sourceId, targetId);
+      }
+
+      dragSourceIdRef.current = null;
+      setDraggedId(null);
+      setDropTargetId(null);
+      document.body.classList.remove("is-reordering-images");
+    }
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+      document.body.classList.remove("is-reordering-images");
+    };
+  }, [dropTargetId, onMove]);
 
   if (images.length === 0) {
     return <p className="empty-state">No images loaded yet.</p>;
   }
 
-  function handleDragStart(event: DragEvent<HTMLElement>, imageId: string) {
+  function handlePointerDown(
+    event: ReactPointerEvent<HTMLButtonElement>,
+    imageId: string,
+  ) {
+    event.preventDefault();
+    event.stopPropagation();
+    dragSourceIdRef.current = imageId;
     setDraggedId(imageId);
-    setDropTargetId(imageId);
-    event.dataTransfer.effectAllowed = "move";
-    event.dataTransfer.setData("text/plain", imageId);
-  }
-
-  function handleDragOver(event: DragEvent<HTMLElement>, imageId: string) {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
-
-    if (draggedId && draggedId !== imageId) {
-      setDropTargetId(imageId);
-    }
-  }
-
-  function resetDragState() {
-    setDraggedId(null);
     setDropTargetId(null);
-  }
-
-  function handleDrop(event: DragEvent<HTMLElement>, targetId: string) {
-    event.preventDefault();
-    const sourceId = event.dataTransfer.getData("text/plain") || draggedId;
-
-    if (sourceId && sourceId !== targetId) {
-      onMove(sourceId, targetId);
-    }
-
-    resetDragState();
+    document.body.classList.add("is-reordering-images");
   }
 
   return (
@@ -63,18 +87,22 @@ export function ImageList({
           index >= visibleStartIndex && index < visibleStartIndex + visibleCount;
         const cellNumber = index - visibleStartIndex + 1;
         const isDragging = draggedId === image.id;
-        const isDropTarget = dropTargetId === image.id && draggedId !== image.id;
+        const isDropTarget = dropTargetId === image.id;
 
         return (
           <article
             className={`image-list__item ${isDragging ? "is-dragging" : ""} ${isDropTarget ? "is-drop-target" : ""}`}
             key={image.id}
-            draggable
-            onDragStart={(event) => handleDragStart(event, image.id)}
-            onDragOver={(event) => handleDragOver(event, image.id)}
-            onDrop={(event) => handleDrop(event, image.id)}
-            onDragEnd={resetDragState}
+            data-image-id={image.id}
           >
+            <button
+              aria-label={`Reorder ${image.name}`}
+              className="image-list__drag-handle"
+              type="button"
+              onPointerDown={(event) => handlePointerDown(event, image.id)}
+            >
+              ::
+            </button>
             <img alt={image.name} className="image-list__thumb" src={image.thumbnailUrl} />
             <div className="image-list__meta">
               <span className="image-list__order">#{index + 1}</span>

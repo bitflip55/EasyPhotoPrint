@@ -421,7 +421,7 @@ select:disabled {
 
 .image-list__item {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr) auto;
+  grid-template-columns: auto 72px minmax(0, 1fr) auto;
   gap: 12px;
   align-items: center;
   padding: 10px;
@@ -433,7 +433,6 @@ select:disabled {
     background 140ms ease,
     opacity 140ms ease;
   border: 1px solid transparent;
-  cursor: grab;
 }
 
 .image-list__item.is-dragging {
@@ -444,6 +443,19 @@ select:disabled {
 .image-list__item.is-drop-target {
   border-color: rgba(122, 243, 224, 0.5);
   background: rgba(122, 243, 224, 0.12);
+}
+
+.image-list__drag-handle {
+  align-self: stretch;
+  min-width: 38px;
+  padding: 0;
+  border: 1px solid rgba(216, 227, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-soft);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  cursor: grab;
 }
 
 .image-list__thumb {
@@ -489,6 +501,11 @@ select:disabled {
 .notice {
   margin: 0;
   color: var(--text-soft);
+}
+
+body.is-reordering-images {
+  cursor: grabbing;
+  user-select: none;
 }
 
 .notice--action {
