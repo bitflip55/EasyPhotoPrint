@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.5 - 2026-03-21
+
+- Added Linux file associations for common image formats.
+- Added startup image import so files opened via `Open With` are loaded directly into the app.
+
 ## 0.1.4 - 2026-03-21
 
 - Fixed the preview title so it reflects the selected page format instead of always showing `A4`.
@@ -21,4 +26,3 @@ All notable changes to this project will be documented in this file.
 
 - Published the first packaged Linux release.
 - Added `.deb` and `.rpm` release artifacts.
-
