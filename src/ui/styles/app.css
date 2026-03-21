@@ -98,6 +98,18 @@ select:disabled {
   font-size: 0.95rem;
 }
 
+.app-shell__update-link {
+  margin-top: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #7af3e0;
+  font: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .link-button {
   padding: 0;
   border: 0;

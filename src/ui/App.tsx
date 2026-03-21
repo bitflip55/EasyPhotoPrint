@@ -14,7 +14,6 @@ import { isDesktopApp } from "@/utils/platform";
 import { printRenderDocument } from "@/utils/print";
 import {
   checkForLatestRelease,
-  getCurrentAppVersion,
   getReleaseDownloadsPageUrl,
 } from "@/utils/updates";
 import { ImageSidebar, Sidebar } from "@/ui/components/Sidebar";
@@ -22,7 +21,7 @@ import { PreviewStage } from "@/ui/components/PreviewStage";
 
 interface UpdatePanelState {
   isUpdateAvailable: boolean;
-  message: string;
+  latestVersion: string | null;
   releasePageUrl: string;
 }
 
@@ -60,7 +59,7 @@ export function App() {
   const [previewPageIndex, setPreviewPageIndex] = useState(0);
   const [updatePanelState, setUpdatePanelState] = useState<UpdatePanelState>({
     isUpdateAvailable: false,
-    message: `Version ${getCurrentAppVersion()} installed. Checking for updates...`,
+    latestVersion: null,
     releasePageUrl: getReleaseDownloadsPageUrl(),
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -103,13 +102,13 @@ export function App() {
       if (result.isUpdateAvailable) {
         setUpdatePanelState({
           isUpdateAvailable: true,
-          message: `Version ${result.latestVersion} is available. Installed: ${result.currentVersion}.`,
+          latestVersion: result.latestVersion,
           releasePageUrl: result.releasePageUrl,
         });
       } else {
         setUpdatePanelState({
           isUpdateAvailable: false,
-          message: `Version ${result.currentVersion} is up to date.`,
+          latestVersion: null,
           releasePageUrl: getReleaseDownloadsPageUrl(),
         });
       }
@@ -117,7 +116,7 @@ export function App() {
       console.error("Update check failed", error);
       setUpdatePanelState({
         isUpdateAvailable: false,
-        message: formatErrorMessage(error, "Update check failed."),
+        latestVersion: null,
         releasePageUrl: getReleaseDownloadsPageUrl(),
       });
     }
@@ -241,6 +240,15 @@ export function App() {
               bitflip55
             </button>
           </p>
+          {updatePanelState.isUpdateAvailable && updatePanelState.latestVersion ? (
+            <button
+              className="app-shell__update-link"
+              type="button"
+              onClick={() => void openExternalUrl(updatePanelState.releasePageUrl)}
+            >
+              New version available v{updatePanelState.latestVersion}
+            </button>
+          ) : null}
         </div>
       </header>
       <input
@@ -270,16 +278,11 @@ export function App() {
             setImportStatusMessage(null);
             setActionStatusMessage("Project was reset.");
           }}
-          onExportPdf={() => void handleExportPdf()}
-          onPrint={() => void handlePrint()}
-          importStatusMessage={importStatusMessage}
-          actionStatusMessage={actionStatusMessage}
-          updatePanel={{
-            message: updatePanelState.message,
-            isUpdateAvailable: updatePanelState.isUpdateAvailable,
-            onOpenReleasePage: () => void openExternalUrl(updatePanelState.releasePageUrl),
-          }}
-        />
+        onExportPdf={() => void handleExportPdf()}
+        onPrint={() => void handlePrint()}
+        importStatusMessage={importStatusMessage}
+        actionStatusMessage={actionStatusMessage}
+      />
       </aside>
       <main className="app-shell__main">
         <PreviewStage

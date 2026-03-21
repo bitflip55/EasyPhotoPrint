@@ -39,8 +39,28 @@ fn open_external_url(url: String) -> Result<(), String> {
         return Err("Only http and https URLs are allowed.".to_string());
     }
 
-    let status = Command::new("xdg-open")
-        .arg(url)
+    #[cfg(target_os = "linux")]
+    let mut command = {
+        let mut command = Command::new("xdg-open");
+        command.arg(&url);
+        command
+    };
+
+    #[cfg(target_os = "macos")]
+    let mut command = {
+        let mut command = Command::new("open");
+        command.arg(&url);
+        command
+    };
+
+    #[cfg(target_os = "windows")]
+    let mut command = {
+        let mut command = Command::new("cmd");
+        command.args(["/C", "start", "", &url]);
+        command
+    };
+
+    let status = command
         .status()
         .map_err(|error| format!("Failed to launch external URL: {}", error))?;
 
@@ -62,9 +82,12 @@ fn print_pdf_bytes(bytes: Vec<u8>, copies: Option<u32>) -> Result<(), String> {
 
     fs::write(&output_path, bytes).map_err(|error| error.to_string())?;
 
+    let copies = copies.unwrap_or(1).max(1);
+
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
     let status = Command::new("lp")
         .arg("-n")
-        .arg(copies.unwrap_or(1).max(1).to_string())
+        .arg(copies.to_string())
         .arg(&output_path)
         .status()
         .map_err(|error| {
@@ -73,6 +96,39 @@ fn print_pdf_bytes(bytes: Vec<u8>, copies: Option<u32>) -> Result<(), String> {
                 error
             )
         })?;
+
+    #[cfg(target_os = "windows")]
+    let status = {
+        for _ in 0..copies {
+            let powershell_command = format!(
+                "Start-Process -FilePath '{}' -Verb Print",
+                output_path.display().to_string().replace('\'', "''")
+            );
+
+            let print_status = Command::new("powershell")
+                .args(["-NoProfile", "-Command", &powershell_command])
+                .status()
+                .map_err(|error| {
+                    format!(
+                        "Failed to start Windows printing. Ensure a PDF viewer with print support is installed: {}",
+                        error
+                    )
+                })?;
+
+            if !print_status.success() {
+                return Err(format!(
+                    "Windows print command exited with status {:?}. The PDF was written to {}",
+                    print_status.code(),
+                    output_path.display()
+                ));
+            }
+        }
+
+        Command::new("cmd")
+            .args(["/C", "exit", "0"])
+            .status()
+            .map_err(|error| error.to_string())?
+    };
 
     if status.success() {
         Ok(())

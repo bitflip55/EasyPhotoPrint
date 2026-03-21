@@ -16,11 +16,6 @@ interface SidebarProps {
   onPrint: () => void;
   importStatusMessage: string | null;
   actionStatusMessage: string | null;
-  updatePanel: {
-    message: string;
-    isUpdateAvailable: boolean;
-    onOpenReleasePage: () => void;
-  };
 }
 
 export function Sidebar(props: SidebarProps) {
@@ -34,7 +29,6 @@ export function Sidebar(props: SidebarProps) {
     onPrint,
     importStatusMessage,
     actionStatusMessage,
-    updatePanel,
   } = props;
 
   return (
@@ -60,19 +54,6 @@ export function Sidebar(props: SidebarProps) {
         onPrint={onPrint}
         actionStatusMessage={actionStatusMessage}
       />
-
-      <section className="panel panel--footer">
-        <div className="panel__header">
-          <p className="eyebrow">Updates</p>
-          <h2>Versions</h2>
-        </div>
-        <p className="notice">{updatePanel.message}</p>
-        <div className="action-row">
-          <button className="button" type="button" onClick={updatePanel.onOpenReleasePage}>
-            {updatePanel.isUpdateAvailable ? "Update now" : "Open releases"}
-          </button>
-        </div>
-      </section>
     </div>
   );
 }

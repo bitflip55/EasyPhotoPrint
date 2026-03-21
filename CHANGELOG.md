@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.10 - 2026-03-21
+
+- Fixed Linux `Open With` file handoff by bundling a desktop entry with `Exec=%F`.
+- Added native macOS and Windows release automation through GitHub Actions.
+- Added platform-specific application icons for macOS and Windows bundles.
+- Moved the update notice from the sidebar into the top version area.
+
 ## 0.1.9 - 2026-03-21
 
 - Renamed release artifacts to user-facing dotted filenames for better presentation when opening local packages.
