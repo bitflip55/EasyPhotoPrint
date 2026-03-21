@@ -1,18 +1,28 @@
-name: Develop Debian Build
+name: Main PR Verify
 
 on:
-  push:
+  pull_request:
     branches:
-      - develop
+      - main
   workflow_dispatch:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
-  build-deb:
-    name: Build .deb
-    runs-on: ubuntu-22.04
+  verify-build:
+    name: Verify (${{ matrix.platform }}, ${{ matrix.args }})
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: ubuntu-22.04
+            args: --bundles deb
+          - platform: windows-latest
+            args: --bundles msi
+          - platform: macos-latest
+            args: --bundles dmg --target aarch64-apple-darwin
 
     steps:
       - name: Checkout
@@ -25,11 +35,20 @@ jobs:
           cache: npm
 
       - name: Setup Rust
+        if: matrix.platform != 'macos-latest'
         uses: dtolnay/rust-toolchain@efa25f7f19611383d5b0ccf2d1c8914531636bf9
         with:
           toolchain: stable
 
+      - name: Setup Rust (macOS target)
+        if: matrix.platform == 'macos-latest'
+        uses: dtolnay/rust-toolchain@efa25f7f19611383d5b0ccf2d1c8914531636bf9
+        with:
+          toolchain: stable
+          targets: aarch64-apple-darwin
+
       - name: Install Linux dependencies
+        if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -44,12 +63,5 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
 
-      - name: Build Debian package
-        run: npm run tauri build -- --bundles deb
-
-      - name: Upload Debian artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: easyphotoprint-deb
-          path: src-tauri/target/release/bundle/deb/*.deb
-          if-no-files-found: error
+      - name: Build platform bundle
+        run: npm run tauri build -- ${{ matrix.args }}
