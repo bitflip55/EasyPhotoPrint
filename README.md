@@ -5,7 +5,8 @@ EasyPhotoPrint is a lightweight modern photo layout and print desktop app, inspi
 ## Downloads
 
 - [Latest releases](https://github.com/bitflip55/EasyPhotoPrint/releases)
-- [Ubuntu `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.0/EasyPhotoPrint_0.2.0_amd64.deb)
+- [Linux `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.0/EasyPhotoPrint_0.2.0_amd64.deb)
+- [Windows `.msi` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.0/EasyPhotoPrint_0.2.0_x64_en-US.msi)
 
 Mainline release artifacts are planned as:
 
@@ -17,6 +18,38 @@ Current channel:
 
 - `main`: stable releases
 - `develop`: fast integration branch with Linux `.deb` CI artifacts
+
+## Install On Linux
+
+Direct download:
+
+- [EasyPhotoPrint_0.2.0_amd64.deb](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.0/EasyPhotoPrint_0.2.0_amd64.deb)
+
+Install with `apt`:
+
+```bash
+wget "https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.0/EasyPhotoPrint_0.2.0_amd64.deb"
+sudo apt install "./EasyPhotoPrint_0.2.0_amd64.deb"
+```
+
+Start the app:
+
+```bash
+easy-photo-print
+```
+
+## Install On Windows
+
+Direct download:
+
+- [EasyPhotoPrint_0.2.0_x64_en-US.msi](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.0/EasyPhotoPrint_0.2.0_x64_en-US.msi)
+
+Install steps:
+
+1. Download the `.msi` file.
+2. Double-click it.
+3. Follow the installer.
+4. Start `EasyPhotoPrint` from the Start menu.
 
 ## Typical Use
 
