@@ -3,31 +3,19 @@
 ## Download
 
 - [Release page](https://github.com/bitflip55/EasyPhotoPrint/releases)
-- [Direct `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.2/Easy.Photo.Print_0.1.2_amd64.deb)
-- [Direct `.rpm` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.2/Easy.Photo.Print-0.1.2-1.x86_64.rpm)
+- [Direct `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.3/Easy.Photo.Print_0.1.3_amd64.deb)
+- [Direct `.rpm` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.3/Easy.Photo.Print-0.1.3-1.x86_64.rpm)
 
 ## Install On Ubuntu
 
-Install the required runtime packages once:
+Download and install the `.deb` package with `apt`:
 
 ```bash
-sudo apt update
-sudo apt install -y \
-  libgtk-3-0 \
-  libwebkit2gtk-4.1-0 \
-  libjavascriptcoregtk-4.1-0 \
-  libsoup-3.0-0 \
-  libayatana-appindicator3-1 \
-  libxdo3 \
-  cups
+wget "https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.3/Easy.Photo.Print_0.1.3_amd64.deb"
+sudo apt install "./Easy.Photo.Print_0.1.3_amd64.deb"
 ```
 
-Download and install the `.deb` package:
-
-```bash
-wget "https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.2/Easy.Photo.Print_0.1.2_amd64.deb"
-sudo apt install "./Easy.Photo.Print_0.1.2_amd64.deb"
-```
+`apt` resolves the package dependencies automatically on a normal Ubuntu system.
 
 ## Start The App
 

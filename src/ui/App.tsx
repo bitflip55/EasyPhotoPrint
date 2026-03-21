@@ -54,7 +54,6 @@ export function App() {
   const [updateStatusMessage, setUpdateStatusMessage] = useState(
     `Version ${getCurrentAppVersion()} installiert. Update-Check läuft...`,
   );
-  const [isCheckingForUpdates, setIsCheckingForUpdates] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previousImagesRef = useRef(project.images);
 
@@ -88,8 +87,6 @@ export function App() {
   }, []);
 
   async function handleCheckForUpdates() {
-    setIsCheckingForUpdates(true);
-
     try {
       const result = await checkForLatestRelease();
 
@@ -103,8 +100,6 @@ export function App() {
     } catch (error) {
       console.error("Update check failed", error);
       setUpdateStatusMessage(formatErrorMessage(error, "Update-Check fehlgeschlagen."));
-    } finally {
-      setIsCheckingForUpdates(false);
     }
   }
 
@@ -234,9 +229,6 @@ export function App() {
           actionStatusMessage={actionStatusMessage}
           updatePanel={{
             message: updateStatusMessage,
-            buttonLabel: isCheckingForUpdates ? "Prüft..." : "Jetzt prüfen",
-            isBusy: isCheckingForUpdates,
-            onCheck: () => void handleCheckForUpdates(),
             onOpenReleasePage: () => void openExternalUrl(getReleaseDownloadsPageUrl()),
           }}
         />

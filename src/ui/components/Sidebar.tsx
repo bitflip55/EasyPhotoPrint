@@ -18,9 +18,6 @@ interface SidebarProps {
   actionStatusMessage: string | null;
   updatePanel: {
     message: string;
-    buttonLabel: string;
-    isBusy: boolean;
-    onCheck: () => void;
     onOpenReleasePage: () => void;
   };
 }
@@ -70,14 +67,6 @@ export function Sidebar(props: SidebarProps) {
         </div>
         <p className="notice">{updatePanel.message}</p>
         <div className="action-row">
-          <button
-            className="button button--ghost"
-            type="button"
-            onClick={updatePanel.onCheck}
-            disabled={updatePanel.isBusy}
-          >
-            {updatePanel.buttonLabel}
-          </button>
           <button className="button" type="button" onClick={updatePanel.onOpenReleasePage}>
             Releases öffnen
           </button>
