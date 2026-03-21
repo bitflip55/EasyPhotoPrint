@@ -5,7 +5,7 @@ EasyPhotoPrint is a lightweight modern photo layout and print desktop app, inspi
 ## Downloads
 
 - [Latest releases](https://github.com/bitflip55/EasyPhotoPrint/releases)
-- [Ubuntu `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.0-beta.3/EasyPhotoPrint_0.2.0-3_amd64.deb)
+- [Ubuntu `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.0/EasyPhotoPrint_0.2.0_amd64.deb)
 
 Mainline release artifacts are planned as:
 
@@ -15,7 +15,7 @@ Mainline release artifacts are planned as:
 
 Current channel:
 
-- `main`: stable beta releases
+- `main`: stable releases
 - `develop`: fast integration branch with Linux `.deb` CI artifacts
 
 ## Typical Use

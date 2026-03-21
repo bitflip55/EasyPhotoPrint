@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## 0.2.0-beta.3 - 2026-03-21
+## 0.2.0 - 2026-03-21
 
 - Introduced the new branch model: `develop` for fast integration and `main` for stable beta releases.
 - Added pinned GitHub Actions workflows: fast Linux `.deb` CI on `develop`, and tag-based Linux/Windows/macOS publishing on `main`.
