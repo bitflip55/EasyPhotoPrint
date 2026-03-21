@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type DragEvent } from "react";
 
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -57,6 +57,7 @@ export function App() {
   const [importStatusMessage, setImportStatusMessage] = useState<string | null>(null);
   const [actionStatusMessage, setActionStatusMessage] = useState<string | null>(null);
   const [previewPageIndex, setPreviewPageIndex] = useState(0);
+  const [isDragActive, setIsDragActive] = useState(false);
   const [updatePanelState, setUpdatePanelState] = useState<UpdatePanelState>({
     isUpdateAvailable: false,
     latestVersion: null,
@@ -65,6 +66,7 @@ export function App() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previousImagesRef = useRef(project.images);
   const startupImagesLoadedRef = useRef(false);
+  const dragDepthRef = useRef(0);
 
   useEffect(() => {
     setPreviewPageIndex((currentPageIndex) =>
@@ -153,7 +155,7 @@ export function App() {
     })();
   }, [dispatch]);
 
-  async function handleAddFiles(files: FileList) {
+  async function handleAddFiles(files: FileList | File[]) {
     try {
       const images = await filesToImageItems(files);
       dispatch({ type: "images/add", payload: images });
@@ -161,6 +163,51 @@ export function App() {
     } catch (error) {
       console.error("Image import failed", error);
       setImportStatusMessage(formatErrorMessage(error, "Images could not be loaded."));
+    }
+  }
+
+  async function handleDroppedFiles(files: FileList) {
+    const imageFiles = Array.from(files).filter((file) => file.type.startsWith("image/"));
+
+    if (imageFiles.length === 0) {
+      setImportStatusMessage("No supported image files were dropped.");
+      return;
+    }
+
+    await handleAddFiles(imageFiles);
+  }
+
+  function handleDragEnter(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepthRef.current += 1;
+    setIsDragActive(true);
+  }
+
+  function handleDragOver(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.dataTransfer.dropEffect = "copy";
+  }
+
+  function handleDragLeave(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepthRef.current = Math.max(0, dragDepthRef.current - 1);
+
+    if (dragDepthRef.current === 0) {
+      setIsDragActive(false);
+    }
+  }
+
+  function handleDrop(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepthRef.current = 0;
+    setIsDragActive(false);
+
+    if (event.dataTransfer.files.length > 0) {
+      void handleDroppedFiles(event.dataTransfer.files);
     }
   }
 
@@ -226,7 +273,13 @@ export function App() {
   }
 
   return (
-    <div className="app-shell">
+    <div
+      className={`app-shell ${isDragActive ? "app-shell--drag-active" : ""}`}
+      onDragEnter={handleDragEnter}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
       <header className="app-shell__header">
         <div>
           <h1>EasyPhotoPrint</h1>
@@ -278,11 +331,11 @@ export function App() {
             setImportStatusMessage(null);
             setActionStatusMessage("Project was reset.");
           }}
-        onExportPdf={() => void handleExportPdf()}
-        onPrint={() => void handlePrint()}
-        importStatusMessage={importStatusMessage}
-        actionStatusMessage={actionStatusMessage}
-      />
+          onExportPdf={() => void handleExportPdf()}
+          onPrint={() => void handlePrint()}
+          importStatusMessage={importStatusMessage}
+          actionStatusMessage={actionStatusMessage}
+        />
       </aside>
       <main className="app-shell__main">
         <PreviewStage
@@ -301,11 +354,21 @@ export function App() {
       <aside className="app-shell__images">
         <ImageSidebar
           project={project}
-          visibleStartIndex={previewPageIndex * project.settings.grid.rows * project.settings.grid.columns}
+          visibleStartIndex={
+            previewPageIndex * project.settings.grid.rows * project.settings.grid.columns
+          }
           placedImageCount={layoutDocument.pages[previewPageIndex]?.placedImageCount ?? 0}
           onRemoveImage={(id) => dispatch({ type: "images/remove", payload: { id } })}
         />
       </aside>
+      {isDragActive ? (
+        <div className="drop-overlay" aria-hidden="true">
+          <div className="drop-overlay__card">
+            <strong>Drop images to import</strong>
+            <span>PNG, JPEG, WebP, GIF and BMP are supported</span>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
