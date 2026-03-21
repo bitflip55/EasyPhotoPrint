@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.14 - 2026-03-21
+
+- Added drag and drop image import across the app window with a visual drop overlay.
+
 ## 0.1.13 - 2026-03-21
 
 - Allowed recursive read access to the user's home directory so `Open With` and startup file import can load images from folders like `Documents`.

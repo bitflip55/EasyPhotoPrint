@@ -1,6 +1,6 @@
 [package]
 name = "easy-photo-print"
-version = "0.1.13"
+version = "0.1.14"
 description = "A lightweight modern photo layout and print desktop app, inspired by classic tools such as PhotoPrint"
 authors = ["Patrick Weiss"]
 homepage = "https://github.com/bitflip55/EasyPhotoPrint"
