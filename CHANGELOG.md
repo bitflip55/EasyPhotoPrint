@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.13 - 2026-03-21
+
+- Allowed recursive read access to the user's home directory so `Open With` and startup file import can load images from folders like `Documents`.
+- Reduced automated releases to Linux `.deb` only for faster iteration.
+
 ## 0.1.12 - 2026-03-21
 
 - Retained the `Open With` fix and switched GitHub release automation to the lean artifact set: `.deb`, `.msi`, and `.dmg`.

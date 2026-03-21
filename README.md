@@ -5,9 +5,7 @@ EasyPhotoPrint is a lightweight modern photo layout and print desktop app, inspi
 ## Downloads
 
 - [Latest releases](https://github.com/bitflip55/EasyPhotoPrint/releases)
-- [Ubuntu `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.12/EasyPhotoPrint_0.1.12_amd64.deb)
-- [Windows `.msi` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.12/EasyPhotoPrint_0.1.12_x64_en-US.msi)
-- [macOS `.dmg` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.12/EasyPhotoPrint_0.1.12_aarch64.dmg)
+- [Ubuntu `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.13/EasyPhotoPrint_0.1.13_amd64.deb)
 
 ## Typical Use
 
@@ -85,8 +83,6 @@ npm run build:linux
 Default release artifacts are generated under:
 
 - `src-tauri/target/release/bundle/deb/`
-- `src-tauri/target/release/bundle/msi/`
-- `src-tauri/target/release/bundle/dmg/`
 
 ## Install On Ubuntu
 

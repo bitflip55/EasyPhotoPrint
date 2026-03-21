@@ -16,10 +16,6 @@ jobs:
         include:
           - platform: ubuntu-22.04
             target: "--bundles deb"
-          - platform: windows-latest
-            target: "--bundles msi"
-          - platform: macos-latest
-            target: "--bundles dmg"
 
     runs-on: ${{ matrix.platform }}
 
