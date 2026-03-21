@@ -5,12 +5,14 @@ EasyPhotoPrint is a lightweight modern photo layout and print desktop app, inspi
 ## Downloads
 
 - [Latest releases](https://github.com/bitflip55/EasyPhotoPrint/releases)
-- [Linux `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.1/EasyPhotoPrint_0.2.1_amd64.deb)
-- [Windows `.msi` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.1/EasyPhotoPrint_0.2.1_x64_en-US.msi)
+- [Linux `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint_0.2.2_amd64.deb)
+- [Linux `.rpm` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint-0.2.2-1.x86_64.rpm)
+- [Windows `.msi` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint_0.2.2_x64_en-US.msi)
 
 Mainline release artifacts are planned as:
 
 - Linux `.deb`
+- Linux `.rpm`
 - Windows `.msi`
 - macOS `.dmg` for Apple Silicon (`arm64`) currently
 
@@ -23,13 +25,32 @@ Current channel:
 
 Direct download:
 
-- [EasyPhotoPrint_0.2.1_amd64.deb](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.1/EasyPhotoPrint_0.2.1_amd64.deb)
+- [EasyPhotoPrint_0.2.2_amd64.deb](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint_0.2.2_amd64.deb)
 
 Install with `apt`:
 
 ```bash
-wget "https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.1/EasyPhotoPrint_0.2.1_amd64.deb"
-sudo apt install "./EasyPhotoPrint_0.2.1_amd64.deb"
+wget "https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint_0.2.2_amd64.deb"
+sudo apt install "./EasyPhotoPrint_0.2.2_amd64.deb"
+```
+
+Start the app:
+
+```bash
+easy-photo-print
+```
+
+## Install On Fedora
+
+Direct download:
+
+- [EasyPhotoPrint-0.2.2-1.x86_64.rpm](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint-0.2.2-1.x86_64.rpm)
+
+Install with `dnf`:
+
+```bash
+wget "https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint-0.2.2-1.x86_64.rpm"
+sudo dnf install "./EasyPhotoPrint-0.2.2-1.x86_64.rpm"
 ```
 
 Start the app:
@@ -42,7 +63,7 @@ easy-photo-print
 
 Direct download:
 
-- [EasyPhotoPrint_0.2.1_x64_en-US.msi](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.1/EasyPhotoPrint_0.2.1_x64_en-US.msi)
+- [EasyPhotoPrint_0.2.2_x64_en-US.msi](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint_0.2.2_x64_en-US.msi)
 
 Install steps:
 
@@ -72,6 +93,7 @@ EasyPhotoPrint is built for simple local print workflows:
 - Live preview from the same layout engine used for PDF and print
 - Multi-page PDF export
 - System printing with configurable copy count
+- Linux release packages for Debian/Ubuntu and Fedora
 
 ## Stack
 

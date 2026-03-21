@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.2.2 - 2026-03-21
+
+- Reintroduced Linux `.rpm` packages for Fedora and other RPM-based distributions in the stable release workflow.
+- Extended the PR-to-main verification workflow to build Linux `.rpm` bundles before release tagging.
+- Added Fedora installation instructions and direct `.rpm` download links to the README.
+
 ## 0.2.1 - 2026-03-21
 
 - Fixed Windows release builds to use the GUI subsystem so no extra black console window opens beside the app.

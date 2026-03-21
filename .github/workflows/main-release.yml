@@ -37,6 +37,8 @@ jobs:
         include:
           - platform: ubuntu-22.04
             args: --bundles deb
+          - platform: ubuntu-22.04
+            args: --bundles rpm
           - platform: windows-latest
             args: --bundles msi
           - platform: macos-latest
