@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.8 - 2026-03-21
+
+- Switched release artifact names to technical package-style filenames.
+- Updated package metadata author to Patrick Weiss.
+
 ## 0.1.7 - 2026-03-21
 
 - Changed the visible product name to `EasyPhotoPrint` for more consistent package manager presentation.

@@ -4,9 +4,9 @@
   <name>EasyPhotoPrint</name>
   <summary>A lightweight modern photo layout and print app for Linux</summary>
   <metadata_license>CC0-1.0</metadata_license>
-  <project_license>Proprietary</project_license>
+  <project_license>MIT</project_license>
   <developer id="bitflip55">
-    <name>bitflip55</name>
+    <name>Patrick Weiss</name>
   </developer>
   <launchable type="desktop-id">EasyPhotoPrint.desktop</launchable>
   <categories>
