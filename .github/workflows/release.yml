@@ -15,11 +15,11 @@ jobs:
       matrix:
         include:
           - platform: ubuntu-22.04
-            target: ""
+            target: "--bundles deb"
           - platform: windows-latest
-            target: ""
+            target: "--bundles msi"
           - platform: macos-latest
-            target: ""
+            target: "--bundles dmg"
 
     runs-on: ${{ matrix.platform }}
 

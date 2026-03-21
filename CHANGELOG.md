@@ -2,9 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.12 - 2026-03-21
+
+- Retained the `Open With` fix and switched GitHub release automation to the lean artifact set: `.deb`, `.msi`, and `.dmg`.
+
 ## 0.1.11 - 2026-03-21
 
 - Fixed startup and `Open With` image loading by reading desktop-selected files as bytes instead of relying on asset URLs for dimension detection.
+- Simplified future GitHub release builds to `deb`, `msi`, and `dmg` artifacts only.
 
 ## 0.1.10 - 2026-03-21
 
