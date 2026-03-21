@@ -4,6 +4,36 @@ use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 #[tauri::command]
+fn get_startup_image_paths() -> Vec<String> {
+    std::env::args()
+        .skip(1)
+        .filter_map(|arg| {
+            let path = PathBuf::from(&arg);
+
+            if !path.is_file() {
+                return None;
+            }
+
+            let extension = path
+                .extension()
+                .and_then(|value| value.to_str())
+                .map(|value| value.to_ascii_lowercase())?;
+
+            let is_supported = matches!(
+                extension.as_str(),
+                "png" | "jpg" | "jpeg" | "webp" | "gif" | "bmp"
+            );
+
+            if is_supported {
+                Some(path.to_string_lossy().to_string())
+            } else {
+                None
+            }
+        })
+        .collect()
+}
+
+#[tauri::command]
 fn open_external_url(url: String) -> Result<(), String> {
     if !url.starts_with("https://") && !url.starts_with("http://") {
         return Err("Only http and https URLs are allowed.".to_string());
@@ -60,7 +90,11 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
-        .invoke_handler(tauri::generate_handler![open_external_url, print_pdf_bytes])
+        .invoke_handler(tauri::generate_handler![
+            get_startup_image_paths,
+            open_external_url,
+            print_pdf_bytes
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

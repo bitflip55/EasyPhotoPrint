@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
+import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import packageJson from "../../package.json";
 
@@ -64,6 +65,7 @@ export function App() {
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previousImagesRef = useRef(project.images);
+  const startupImagesLoadedRef = useRef(false);
 
   useEffect(() => {
     setPreviewPageIndex((currentPageIndex) =>
@@ -124,6 +126,33 @@ export function App() {
   useEffect(() => {
     void handleCheckForUpdates();
   }, []);
+
+  useEffect(() => {
+    if (!isDesktopApp() || startupImagesLoadedRef.current) {
+      return;
+    }
+
+    startupImagesLoadedRef.current = true;
+
+    void (async () => {
+      try {
+        const startupPaths = await invoke<string[]>("get_startup_image_paths");
+
+        if (startupPaths.length === 0) {
+          return;
+        }
+
+        const images = await pathsToImageItems(startupPaths);
+        dispatch({ type: "images/add", payload: images });
+        setImportStatusMessage(`${images.length} image(s) loaded from startup files.`);
+      } catch (error) {
+        console.error("Startup image import failed", error);
+        setImportStatusMessage(
+          formatErrorMessage(error, "Startup images could not be loaded."),
+        );
+      }
+    })();
+  }, [dispatch]);
 
   async function handleAddFiles(files: FileList) {
     try {
