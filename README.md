@@ -89,8 +89,8 @@ Artifacts are generated under:
 
 ## Install On Ubuntu
 
-See [docs/INSTALL-ubuntu.md](/home/bitflip/EasyPhotoPrint/docs/INSTALL-ubuntu.md).
+See [docs/INSTALL-ubuntu.md](docs/INSTALL-ubuntu.md).
 
 ## Release Checklist
 
-See [docs/RELEASE.md](/home/bitflip/EasyPhotoPrint/docs/RELEASE.md).
+See [docs/RELEASE.md](docs/RELEASE.md).
