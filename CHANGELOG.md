@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.6 - 2026-03-21
+
+- Added Linux AppStream metainfo metadata for better package manager presentation.
+- Bundled the metainfo file into `.deb` and `.rpm` packages.
+
 ## 0.1.5 - 2026-03-21
 
 - Added Linux file associations for common image formats.

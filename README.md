@@ -5,8 +5,8 @@ Easy Photo Print is a lightweight modern photo layout and print app for Linux, i
 ## Downloads
 
 - [Latest releases](https://github.com/bitflip55/EasyPhotoPrint/releases)
-- [Ubuntu `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.5/Easy.Photo.Print_0.1.5_amd64.deb)
-- [Linux `.rpm` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.5/Easy.Photo.Print-0.1.5-1.x86_64.rpm)
+- [Ubuntu `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.6/Easy.Photo.Print_0.1.6_amd64.deb)
+- [Linux `.rpm` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.6/Easy.Photo.Print-0.1.6-1.x86_64.rpm)
 
 ## Typical Use
 
