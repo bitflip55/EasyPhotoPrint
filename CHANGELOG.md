@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.9 - 2026-03-21
+
+- Renamed release artifacts to user-facing dotted filenames for better presentation when opening local packages.
+- Kept the visible product name as `EasyPhotoPrint`, with MIT license metadata and Patrick Weiss as author.
+
 ## 0.1.8 - 2026-03-21
 
 - Switched release artifact names to technical package-style filenames.
