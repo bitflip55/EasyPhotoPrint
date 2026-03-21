@@ -9,8 +9,26 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
+  verifyTagOnMain:
+    name: Verify tag points to main
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+
+      - name: Verify tag ancestry on main
+        run: |
+          git fetch origin main --depth=1
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+
   publish:
     name: Publish (${{ matrix.platform }}, ${{ matrix.args || 'default' }})
+    needs: verifyTagOnMain
     permissions:
       contents: write
     strategy:
@@ -28,21 +46,21 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 22
           cache: npm
 
       - name: Setup Rust
         if: matrix.platform != 'macos-latest'
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@efa25f7f19611383d5b0ccf2d1c8914531636bf9
 
       - name: Setup Rust (macOS target)
         if: matrix.platform == 'macos-latest'
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@efa25f7f19611383d5b0ccf2d1c8914531636bf9
         with:
           targets: aarch64-apple-darwin
 
@@ -63,7 +81,7 @@ jobs:
         run: npm ci
 
       - name: Build and publish release assets
-        uses: tauri-apps/tauri-action@v1
+        uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
