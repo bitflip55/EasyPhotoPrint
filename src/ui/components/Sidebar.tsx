@@ -63,7 +63,7 @@ interface ImageSidebarProps {
   visibleStartIndex: number;
   placedImageCount: number;
   onRemoveImage: (id: string) => void;
-  onMoveImage: (sourceId: string, targetId: string) => void;
+  onMoveImage: (fromIndex: number, toIndex: number) => void;
 }
 
 export function ImageSidebar({

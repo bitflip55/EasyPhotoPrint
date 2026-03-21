@@ -423,8 +423,8 @@ export function App() {
           }
           placedImageCount={layoutDocument.pages[previewPageIndex]?.placedImageCount ?? 0}
           onRemoveImage={(id) => dispatch({ type: "images/remove", payload: { id } })}
-          onMoveImage={(sourceId, targetId) =>
-            dispatch({ type: "images/move", payload: { sourceId, targetId } })
+          onMoveImage={(fromIndex, toIndex) =>
+            dispatch({ type: "images/move", payload: { fromIndex, toIndex } })
           }
         />
       </aside>

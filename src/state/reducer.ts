@@ -20,28 +20,26 @@ export function projectReducer(
         images: state.images.filter((image) => image.id !== action.payload.id),
       };
     case "images/move": {
-      const sourceIndex = state.images.findIndex(
-        (image) => image.id === action.payload.sourceId,
-      );
-      const targetIndex = state.images.findIndex(
-        (image) => image.id === action.payload.targetId,
-      );
+      const { fromIndex, toIndex } = action.payload;
 
       if (
-        sourceIndex === -1 ||
-        targetIndex === -1 ||
-        sourceIndex === targetIndex
+        fromIndex < 0 ||
+        toIndex < 0 ||
+        fromIndex >= state.images.length ||
+        toIndex >= state.images.length ||
+        fromIndex === toIndex
       ) {
         return state;
       }
 
       const images = [...state.images];
-      const [movedImage] = images.splice(sourceIndex, 1);
+      const [movedImage] = images.splice(fromIndex, 1);
 
       if (!movedImage) {
         return state;
       }
-      images.splice(targetIndex, 0, movedImage);
+
+      images.splice(toIndex, 0, movedImage);
 
       return {
         ...state,

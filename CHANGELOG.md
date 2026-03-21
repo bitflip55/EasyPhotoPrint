@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.21 - 2026-03-21
+
+- Fixed `dnd-kit` image reordering to use direct index-based moves in the reducer, matching the sortable list semantics and avoiding erratic reorder results.
+
 ## 0.1.20 - 2026-03-21
 
 - Replaced the custom image reordering implementation with a `dnd-kit` sortable list and drag overlay for more reliable, smoother reordering in the React/Tauri UI.

@@ -24,7 +24,7 @@ interface ImageListProps {
   visibleStartIndex: number;
   visibleCount: number;
   onRemove: (id: string) => void;
-  onMove: (sourceId: string, targetId: string) => void;
+  onMove: (fromIndex: number, toIndex: number) => void;
 }
 
 interface ImageListItemProps {
@@ -163,7 +163,14 @@ export function ImageList({
       return;
     }
 
-    onMove(String(active.id), String(over.id));
+    const fromIndex = images.findIndex((image) => image.id === String(active.id));
+    const toIndex = images.findIndex((image) => image.id === String(over.id));
+
+    if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) {
+      return;
+    }
+
+    onMove(fromIndex, toIndex);
   }
 
   return (
