@@ -3,15 +3,15 @@
 ## Download
 
 - [Release page](https://github.com/bitflip55/EasyPhotoPrint/releases)
-- [Direct `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.23/EasyPhotoPrint_0.1.23_amd64.deb)
+- [Direct `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.24/EasyPhotoPrint_0.1.24_amd64.deb)
 
 ## Install On Ubuntu
 
 Download and install the `.deb` package with `apt`:
 
 ```bash
-wget "https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.23/EasyPhotoPrint_0.1.23_amd64.deb"
-sudo apt install "./EasyPhotoPrint_0.1.23_amd64.deb"
+wget "https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.24/EasyPhotoPrint_0.1.24_amd64.deb"
+sudo apt install "./EasyPhotoPrint_0.1.24_amd64.deb"
 ```
 
 `apt` resolves the package dependencies automatically on a normal Ubuntu system.

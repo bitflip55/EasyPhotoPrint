@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.24 - 2026-03-21
+
+- Switched the image reorder drag overlay to `@dnd-kit/modifiers` `snapCenterToCursor` for a cleaner, more predictable cursor anchor.
+
 ## 0.1.23 - 2026-03-21
 
 - Moved the image reorder drag overlay offset into a real `dnd-kit` overlay modifier so the grabbed card tracks the mouse pointer more accurately.
