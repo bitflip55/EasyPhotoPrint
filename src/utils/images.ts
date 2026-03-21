@@ -1,4 +1,4 @@
-import { convertFileSrc } from "@tauri-apps/api/core";
+import { readFile } from "@tauri-apps/plugin-fs";
 
 import type { ImageItem } from "@/domain/model/types";
 
@@ -31,6 +31,30 @@ function getBaseName(path: string): string {
   return segments[segments.length - 1] ?? path;
 }
 
+function getExtension(path: string): string {
+  const fileName = getBaseName(path);
+  const parts = fileName.split(".");
+  return parts.length > 1 ? (parts[parts.length - 1] ?? "").toLowerCase() : "";
+}
+
+function getMimeType(path: string): string {
+  switch (getExtension(path)) {
+    case "png":
+      return "image/png";
+    case "jpg":
+    case "jpeg":
+      return "image/jpeg";
+    case "webp":
+      return "image/webp";
+    case "gif":
+      return "image/gif";
+    case "bmp":
+      return "image/bmp";
+    default:
+      return "application/octet-stream";
+  }
+}
+
 export async function filesToImageItems(files: FileList | File[]): Promise<ImageItem[]> {
   const selectedFiles = Array.from(files);
 
@@ -54,16 +78,17 @@ export async function filesToImageItems(files: FileList | File[]): Promise<Image
 export async function pathsToImageItems(paths: string[]): Promise<ImageItem[]> {
   return Promise.all(
     paths.map(async (path, index) => {
-      const imageUrl = convertFileSrc(path);
-      const dimensions = await loadImageDimensions(imageUrl);
+      const imageBytes = await readFile(path);
+      const objectUrl = URL.createObjectURL(new Blob([imageBytes], { type: getMimeType(path) }));
+      const dimensions = await loadImageDimensions(objectUrl);
 
       return {
         id: createImageId(path, index),
         name: getBaseName(path),
         path,
         dimensions,
-        thumbnailUrl: imageUrl,
-        thumbnailUrlKind: "asset-url",
+        thumbnailUrl: objectUrl,
+        thumbnailUrlKind: "object-url",
       };
     }),
   );

@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.11 - 2026-03-21
+
+- Fixed startup and `Open With` image loading by reading desktop-selected files as bytes instead of relying on asset URLs for dimension detection.
+
 ## 0.1.10 - 2026-03-21
 
 - Fixed Linux `Open With` file handoff by bundling a desktop entry with `Exec=%F`.
