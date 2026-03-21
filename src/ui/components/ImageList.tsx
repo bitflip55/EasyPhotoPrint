@@ -47,9 +47,10 @@ export function ImageList({
 
   function handleDrop(event: DragEvent<HTMLElement>, targetId: string) {
     event.preventDefault();
+    const sourceId = event.dataTransfer.getData("text/plain") || draggedId;
 
-    if (draggedId && draggedId !== targetId) {
-      onMove(draggedId, targetId);
+    if (sourceId && sourceId !== targetId) {
+      onMove(sourceId, targetId);
     }
 
     resetDragState();

@@ -53,6 +53,10 @@ function createTimestampedPdfFilename(): string {
   return `easy-photo-print-${timestamp}.pdf`;
 }
 
+function hasDraggedFiles(event: DragEvent<HTMLDivElement>): boolean {
+  return Array.from(event.dataTransfer.types).includes("Files");
+}
+
 export function App() {
   const { project, layoutDocument, renderDocument, dispatch } = useProjectState();
   const [importStatusMessage, setImportStatusMessage] = useState<string | null>(null);
@@ -222,6 +226,10 @@ export function App() {
   }
 
   function handleDragEnter(event: DragEvent<HTMLDivElement>) {
+    if (!hasDraggedFiles(event)) {
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
     dragDepthRef.current += 1;
@@ -229,12 +237,20 @@ export function App() {
   }
 
   function handleDragOver(event: DragEvent<HTMLDivElement>) {
+    if (!hasDraggedFiles(event)) {
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
     event.dataTransfer.dropEffect = "copy";
   }
 
   function handleDragLeave(event: DragEvent<HTMLDivElement>) {
+    if (!hasDraggedFiles(event)) {
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
     dragDepthRef.current = Math.max(0, dragDepthRef.current - 1);
@@ -245,6 +261,10 @@ export function App() {
   }
 
   function handleDrop(event: DragEvent<HTMLDivElement>) {
+    if (!hasDraggedFiles(event)) {
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
     dragDepthRef.current = 0;
