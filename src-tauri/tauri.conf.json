@@ -36,8 +36,8 @@
     "publisher": "bitflip55",
     "homepage": "https://github.com/bitflip55/EasyPhotoPrint",
     "category": "Graphics and Design",
-    "shortDescription": "Linux desktop app for photo layout, PDF export and printing.",
-    "longDescription": "Easy Photo Print is a Linux desktop app for arranging local photos on printable pages with configurable formats, grids, margins, spacing, multi-page PDF export and system printing.",
+    "shortDescription": "A lightweight modern photo layout and print app for Linux, inspired by classic tools such as PhotoPrint.",
+    "longDescription": "Easy Photo Print is a lightweight modern photo layout and print app for Linux, inspired by classic tools such as PhotoPrint, with configurable formats, grids, margins, spacing, multi-page PDF export and system printing.",
     "icon": [
       "icons/32x32.png",
       "icons/64x64.png",

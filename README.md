@@ -1,6 +1,6 @@
 # Easy Photo Print
 
-Easy Photo Print is a Linux desktop app for arranging local photos on printable pages with configurable formats, grids, margins, spacing, multi-page PDF export and system printing.
+Easy Photo Print is a lightweight modern photo layout and print app for Linux, inspired by classic tools such as PhotoPrint.
 
 ## Downloads
 
