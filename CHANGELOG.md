@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.22 - 2026-03-21
+
+- Adjusted the image reorder drag overlay offset so the grabbed item tracks closer to the mouse pointer.
+
 ## 0.1.21 - 2026-03-21
 
 - Fixed `dnd-kit` image reordering to use direct index-based moves in the reducer, matching the sortable list semantics and avoiding erratic reorder results.
