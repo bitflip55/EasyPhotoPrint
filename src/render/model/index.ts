@@ -1,5 +1,7 @@
 export type {
   RenderCellNode,
+  RenderCrop,
+  RenderDocument,
   RenderImageNode,
   RenderNode,
   RenderPageNode,

@@ -1,57 +1,56 @@
 # Easy Photo Print
 
-Modern Linux desktop app for laying out local photos on a single A4 page and using one shared layout engine for preview, PDF export and printing.
+Easy Photo Print is a Linux desktop app for arranging local photos on printable pages with configurable formats, grids, margins, spacing, multi-page PDF export and system printing.
+
+## Downloads
+
+- [Latest releases](https://github.com/bitflip55/EasyPhotoPrint/releases)
+- [Ubuntu `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.1/Easy%20Photo%20Print_0.1.1_amd64.deb)
+- [Linux `.rpm` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.1.1/Easy%20Photo%20Print-0.1.1-1.x86_64.rpm)
+
+## Typical Use
+
+Easy Photo Print is built for simple local print workflows:
+
+- Load one or many local photos
+- Choose page format, orientation, rows, columns, margins and spacing
+- Use `Fit` or `Fill` placement
+- Preview the exact page layout live
+- Export the same layout as a multi-page PDF
+- Print through the system printer with configurable copy count
+
+## Features
+
+- Local image import
+- Configurable page formats: `A6`, `A5`, `A4`, `A3`, `B5`, `Letter`, `Legal`, `Executive`, `Tabloid`
+- Portrait and landscape
+- Configurable rows, columns, margins and gaps
+- `Fit` and `Fill` placement modes
+- Live preview from the same layout engine used for PDF and print
+- Multi-page PDF export
+- System printing with configurable copy count
 
 ## Stack
 
 - Tauri 2
 - React 19
-- TypeScript with strict mode
+- TypeScript strict mode
 - Vite 8
 
-## Architecture Direction
+## Architecture
 
-- `src/domain`: domain model and layout engine
-- `src/render`: renderer-neutral render model plus output-specific renderers
-- `src/ui`: application shell and UI components
-- `src/state`: local app state and defaults
-- `src-tauri`: desktop shell, file access and print/export integration
+- `src/domain`: layout engine and domain types
+- `src/render`: render model plus preview and PDF rendering
+- `src/ui`: application UI
+- `src/state`: local state and persistence
+- `src-tauri`: Linux desktop shell and native commands
 
-## Milestone Status
-
-- M1: project shell and architecture scaffold
-- M2+: image import, layout engine, preview renderer, PDF and print
-
-## Expected Local Workflow
-
-## Local Prerequisites
+## Development Prerequisites
 
 - Node.js `>=20.19.0`
 - npm
 - Rust toolchain
-- Linux packages required by Tauri WebKit runtime, for example on Debian/Ubuntu:
-  - `libwebkit2gtk-4.1-dev`
-  - `build-essential`
-  - `curl`
-  - `wget`
-  - `file`
-  - `libxdo-dev`
-  - `libssl-dev`
-  - `libayatana-appindicator3-dev`
-  - `librsvg2-dev`
-
-## Expected Local Workflow
-
-1. `npm run doctor`
-2. `npm install`
-3. `npm run tauri dev`
-
-## Current Environment Status
-
-- The current machine is on Node `18.19.1`, which is too old for Vite 8.
-- The current machine is also missing `webkit2gtk-4.1`, `javascriptcoregtk-4.1` and `libsoup-3.0` development packages required by Tauri on Linux.
-
-## Debian/Ubuntu Example
+- Debian/Ubuntu packages:
 
 ```bash
 sudo apt update
@@ -68,13 +67,30 @@ sudo apt install -y \
   wget
 ```
 
-Then install a newer Node.js release, for example Node 20 LTS or newer, and rerun:
+## Development Workflow
 
-1. `npm install`
-2. `npm run doctor`
-3. `npm run tauri dev`
+```bash
+npm run doctor
+npm install
+npm run tauri dev
+```
 
-## Notes
+## Build Linux Packages
 
-- Layout calculations will be defined once in millimeters and reused across preview, PDF and print.
-- PDF is intended to be the canonical output path for v1 printing.
+```bash
+npm run build:linux
+```
+
+Artifacts are generated under:
+
+- `src-tauri/target/release/bundle/deb/`
+- `src-tauri/target/release/bundle/rpm/`
+- `src-tauri/target/release/bundle/appimage/`
+
+## Install On Ubuntu
+
+See [docs/INSTALL-ubuntu.md](/home/bitflip/EasyPhotoPrint/docs/INSTALL-ubuntu.md).
+
+## Release Checklist
+
+See [docs/RELEASE.md](/home/bitflip/EasyPhotoPrint/docs/RELEASE.md).

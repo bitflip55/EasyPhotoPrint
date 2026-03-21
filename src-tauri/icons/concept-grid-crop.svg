@@ -1,0 +1,30 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg2" x1="88" y1="56" x2="424" y2="458" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6522C8"/>
+      <stop offset="0.42" stop-color="#23D1D0"/>
+      <stop offset="0.7" stop-color="#7E2BFF"/>
+      <stop offset="1" stop-color="#2E73FF"/>
+    </linearGradient>
+    <linearGradient id="photo2" x1="160" y1="160" x2="348" y2="336" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8A6DFF"/>
+      <stop offset="0.52" stop-color="#22DED0"/>
+      <stop offset="1" stop-color="#2C63FF"/>
+    </linearGradient>
+    <filter id="shadow2" x="70" y="70" width="372" height="372" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#090823" flood-opacity="0.34"/>
+    </filter>
+  </defs>
+  <rect x="36" y="36" width="440" height="440" rx="112" fill="url(#bg2)"/>
+  <g filter="url(#shadow2)">
+    <rect x="112" y="112" width="288" height="288" rx="44" fill="#FDFEFF"/>
+    <rect x="148" y="148" width="216" height="216" rx="26" fill="url(#photo2)"/>
+    <path d="M148 222H364" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="8"/>
+    <path d="M148 290H364" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="8"/>
+    <path d="M222 148L222 364" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="8"/>
+    <path d="M290 148L290 364" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="8"/>
+    <rect x="174" y="174" width="164" height="164" rx="18" stroke="#FFFFFF" stroke-width="12"/>
+    <path d="M174 214H150V174" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M338 298H362V338" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

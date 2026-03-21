@@ -1,1 +1,1 @@
-export {};
+export { renderPdfDocument } from "@/render/pdf/renderPdfDocument";

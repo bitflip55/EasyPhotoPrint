@@ -1,67 +1,117 @@
-import { defaultProjectSettings } from "@/state/defaults";
+import type { Dispatch } from "react";
 
-export function Sidebar() {
-  const { page, grid, placementMode, centerImages } = defaultProjectSettings;
+import { FilePicker } from "@/ui/components/FilePicker";
+import { ImageList } from "@/ui/components/ImageList";
+import { Inspector } from "@/ui/components/Inspector";
+import type { ProjectDocument } from "@/domain/model/types";
+import type { ProjectAction } from "@/state/actions";
+
+interface SidebarProps {
+  project: ProjectDocument;
+  pageCount: number;
+  onDispatch: Dispatch<ProjectAction>;
+  onAddFiles: () => void;
+  onReset: () => void;
+  onExportPdf: () => void;
+  onPrint: () => void;
+  importStatusMessage: string | null;
+  actionStatusMessage: string | null;
+  updatePanel: {
+    message: string;
+    buttonLabel: string;
+    isBusy: boolean;
+    onCheck: () => void;
+    onOpenReleasePage: () => void;
+  };
+}
+
+export function Sidebar(props: SidebarProps) {
+  const {
+    project,
+    pageCount,
+    onDispatch,
+    onAddFiles,
+    onReset,
+    onExportPdf,
+    onPrint,
+    importStatusMessage,
+    actionStatusMessage,
+    updatePanel,
+  } = props;
 
   return (
     <div className="panel-stack">
       <section className="panel">
         <div className="panel__header">
-          <p className="eyebrow">Project</p>
-          <h1>Easy Photo Print</h1>
+          <p className="eyebrow">Bilder</p>
+          <h2>Import</h2>
         </div>
-        <p className="panel__text">
-          Linux desktop app for placing local photos on a single A4 page with one
-          shared layout engine for preview, PDF and printing.
-        </p>
+        <div className="action-row">
+          <FilePicker onRequestSelect={onAddFiles} />
+        </div>
+        {importStatusMessage ? <p className="notice notice--action">{importStatusMessage}</p> : null}
       </section>
 
-      <section className="panel">
-        <div className="panel__header">
-          <p className="eyebrow">Milestone M1</p>
-          <h2>Shell Layout</h2>
-        </div>
+      <Inspector
+        project={project}
+        pageCount={pageCount}
+        totalImageCount={project.images.length}
+        onDispatch={onDispatch}
+        onReset={onReset}
+        onExportPdf={onExportPdf}
+        onPrint={onPrint}
+        actionStatusMessage={actionStatusMessage}
+      />
 
-        <dl className="spec-list">
-          <div>
-            <dt>Page</dt>
-            <dd>
-              {page.widthMm} x {page.heightMm} mm
-            </dd>
-          </div>
-          <div>
-            <dt>Orientation</dt>
-            <dd>{page.orientation}</dd>
-          </div>
-          <div>
-            <dt>Grid</dt>
-            <dd>
-              {grid.rows} rows x {grid.columns} columns
-            </dd>
-          </div>
-          <div>
-            <dt>Mode</dt>
-            <dd>{placementMode}</dd>
-          </div>
-          <div>
-            <dt>Centering</dt>
-            <dd>{centerImages ? "enabled" : "disabled"}</dd>
-          </div>
-        </dl>
-      </section>
-
-      <section className="panel">
+      <section className="panel panel--footer">
         <div className="panel__header">
-          <p className="eyebrow">Architecture</p>
-          <h2>Planned Layers</h2>
+          <p className="eyebrow">Updates</p>
+          <h2>Versionen</h2>
         </div>
-        <ul className="roadmap">
-          <li>Domain layout engine in millimeters</li>
-          <li>Neutral render model for preview, PDF and print</li>
-          <li>Dedicated renderers without duplicated geometry rules</li>
-          <li>Tauri shell for file dialogs, export and print actions</li>
-        </ul>
+        <p className="notice">{updatePanel.message}</p>
+        <div className="action-row">
+          <button
+            className="button button--ghost"
+            type="button"
+            onClick={updatePanel.onCheck}
+            disabled={updatePanel.isBusy}
+          >
+            {updatePanel.buttonLabel}
+          </button>
+          <button className="button" type="button" onClick={updatePanel.onOpenReleasePage}>
+            Releases öffnen
+          </button>
+        </div>
       </section>
     </div>
+  );
+}
+
+interface ImageSidebarProps {
+  project: ProjectDocument;
+  visibleStartIndex: number;
+  placedImageCount: number;
+  onRemoveImage: (id: string) => void;
+}
+
+export function ImageSidebar({
+  project,
+  visibleStartIndex,
+  placedImageCount,
+  onRemoveImage,
+}: ImageSidebarProps) {
+  return (
+    <section className="panel image-sidebar">
+      <div className="panel__header">
+        <p className="eyebrow">Bilder</p>
+        <h2>Lokale Auswahl</h2>
+      </div>
+      <ImageList
+        images={project.images}
+        visibleStartIndex={visibleStartIndex}
+        visibleCount={placedImageCount}
+        onRemove={onRemoveImage}
+      />
+    </section>
   );
 }

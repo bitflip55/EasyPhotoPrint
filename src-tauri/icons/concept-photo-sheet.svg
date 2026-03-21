@@ -1,0 +1,31 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg1" x1="76" y1="56" x2="434" y2="456" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7D33FF"/>
+      <stop offset="0.45" stop-color="#28D7CF"/>
+      <stop offset="1" stop-color="#2C63FF"/>
+    </linearGradient>
+    <linearGradient id="photo1" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#A68BFF"/>
+      <stop offset="1" stop-color="#2EE1D5"/>
+    </linearGradient>
+    <filter id="shadow1" x="74" y="80" width="364" height="368" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#090823" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+  <rect x="36" y="36" width="440" height="440" rx="112" fill="url(#bg1)"/>
+  <circle cx="126" cy="118" r="76" fill="#FFFFFF" fill-opacity="0.08"/>
+  <circle cx="392" cy="374" r="92" fill="#FFFFFF" fill-opacity="0.08"/>
+  <g filter="url(#shadow1)">
+    <rect x="112" y="100" width="288" height="292" rx="36" fill="#FDFEFF"/>
+    <rect x="140" y="130" width="232" height="232" rx="20" fill="#EDF2FF"/>
+    <rect x="140" y="130" width="110" height="110" rx="16" fill="url(#photo1)"/>
+    <rect x="262" y="130" width="110" height="110" rx="16" fill="#FFFFFF"/>
+    <rect x="152" y="142" width="86" height="86" rx="12" fill="#FFFFFF" fill-opacity="0.12"/>
+    <rect x="140" y="252" width="110" height="110" rx="16" fill="#FFFFFF"/>
+    <rect x="262" y="252" width="110" height="110" rx="16" fill="#DDE5FF"/>
+    <rect x="282" y="272" width="70" height="70" rx="14" fill="#FFFFFF"/>
+    <path d="M176 173C184.837 173 192 165.837 192 157C192 148.163 184.837 141 176 141C167.163 141 160 148.163 160 157C160 165.837 167.163 173 176 173Z" fill="#FFFFFF" fill-opacity="0.9"/>
+    <path d="M154 214L179 188L196 205L222 175L236 214H154Z" fill="#FFFFFF" fill-opacity="0.92"/>
+  </g>
+</svg>
