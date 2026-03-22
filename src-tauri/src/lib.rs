@@ -18,9 +18,7 @@ fn write_temp_pdf(bytes: Vec<u8>) -> Result<PathBuf, String> {
 
 fn open_path_in_default_app(path: &PathBuf) -> Result<(), String> {
     #[cfg(target_os = "linux")]
-    let status = Command::new("xdg-open")
-        .arg(path)
-        .status()
+    let status = open_linux_target(path.as_os_str().to_string_lossy().as_ref())
         .map_err(|error| format!("Failed to open generated PDF: {}", error))?;
 
     #[cfg(target_os = "macos")]
@@ -42,6 +40,46 @@ fn open_path_in_default_app(path: &PathBuf) -> Result<(), String> {
             "Opening the generated PDF exited with status {:?}",
             status.code()
         ))
+    }
+}
+
+#[cfg(target_os = "linux")]
+async fn open_pdf_via_flatpak_print_portal(path: &PathBuf) -> Result<(), String> {
+    use std::fs::File;
+
+    use ashpd::desktop::print::{PrintOptions, PrintProxy};
+
+    let proxy = PrintProxy::new()
+        .await
+        .map_err(|error| format!("Failed to connect to the Flatpak print portal: {}", error))?;
+
+    let file = File::open(path)
+        .map_err(|error| format!("Failed to reopen the generated PDF for printing: {}", error))?;
+
+    eprintln!("EasyPhotoPrint Flatpak: requesting print portal dialog");
+
+    let request = proxy
+        .print(None, "EasyPhotoPrint", &file, PrintOptions::default().set_modal(true))
+        .await
+        .map_err(|error| format!("Failed to open the Flatpak print dialog: {}", error))?;
+
+    request
+        .response()
+        .map_err(|error| format!("The Flatpak print dialog did not complete successfully: {}", error))?;
+
+    eprintln!("EasyPhotoPrint Flatpak: print portal dialog completed");
+
+    Ok(())
+}
+
+#[cfg(target_os = "linux")]
+fn open_linux_target(target: &str) -> Result<std::process::ExitStatus, String> {
+    match Command::new("gio").args(["open", target]).status() {
+        Ok(status) => Ok(status),
+        Err(_) => Command::new("xdg-open")
+            .arg(target)
+            .status()
+            .map_err(|error| error.to_string()),
     }
 }
 
@@ -76,40 +114,67 @@ fn get_startup_image_paths() -> Vec<String> {
 }
 
 #[tauri::command]
+fn is_flatpak_runtime() -> bool {
+    #[cfg(target_os = "linux")]
+    {
+        std::env::var_os("FLATPAK_ID").is_some() || PathBuf::from("/.flatpak-info").is_file()
+    }
+
+    #[cfg(not(target_os = "linux"))]
+    {
+        false
+    }
+}
+
+#[tauri::command]
+async fn retrieve_flatpak_transfer_files(key: String) -> Result<Vec<String>, String> {
+    #[cfg(target_os = "linux")]
+    {
+        use ashpd::documents::file_transfer::{FileTransfer, RetrieveFilesOptions};
+
+        let proxy = FileTransfer::new()
+            .await
+            .map_err(|error| format!("Failed to connect to the Flatpak file transfer portal: {}", error))?;
+
+        proxy
+            .retrieve_files(&key, RetrieveFilesOptions::default())
+            .await
+            .map_err(|error| format!("Failed to retrieve dropped files from the Flatpak portal: {}", error))
+    }
+
+    #[cfg(not(target_os = "linux"))]
+    {
+        let _ = key;
+        Err("Flatpak file transfer retrieval is only available on Linux.".to_string())
+    }
+}
+
+#[tauri::command]
 fn open_external_url(url: String) -> Result<(), String> {
     if !url.starts_with("https://") && !url.starts_with("http://") {
         return Err("Only http and https URLs are allowed.".to_string());
     }
 
     #[cfg(target_os = "linux")]
-    let mut command = {
-        let mut command = Command::new("xdg-open");
-        command.arg(&url);
-        command
-    };
+    let status = open_linux_target(&url)
+        .map_err(|error| format!("Failed to launch external URL: {}", error))?;
 
     #[cfg(target_os = "macos")]
-    let mut command = {
-        let mut command = Command::new("open");
-        command.arg(&url);
-        command
-    };
+    let status = Command::new("open")
+        .arg(&url)
+        .status()
+        .map_err(|error| format!("Failed to launch external URL: {}", error))?;
 
     #[cfg(target_os = "windows")]
-    let mut command = {
-        let mut command = Command::new("cmd");
-        command.args(["/C", "start", "", &url]);
-        command
-    };
-
-    let status = command
+    let status = Command::new("cmd")
+        .args(["/C", "start", "", &url])
         .status()
         .map_err(|error| format!("Failed to launch external URL: {}", error))?;
 
     if status.success() {
         Ok(())
     } else {
-        Err(format!("xdg-open exited with status {:?}", status.code()))
+        Err(format!("Opening the external URL exited with status {:?}", status.code()))
     }
 }
 
@@ -177,8 +242,15 @@ fn print_pdf_bytes(bytes: Vec<u8>, copies: Option<u32>) -> Result<(), String> {
 }
 
 #[tauri::command]
-fn open_pdf_bytes(bytes: Vec<u8>) -> Result<String, String> {
+async fn open_pdf_bytes(bytes: Vec<u8>) -> Result<String, String> {
     let output_path = write_temp_pdf(bytes)?;
+
+    #[cfg(target_os = "linux")]
+    if is_flatpak_runtime() {
+        open_pdf_via_flatpak_print_portal(&output_path).await?;
+        return Ok(String::new());
+    }
+
     open_path_in_default_app(&output_path)?;
     Ok(output_path.display().to_string())
 }
@@ -190,6 +262,8 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .invoke_handler(tauri::generate_handler![
             get_startup_image_paths,
+            is_flatpak_runtime,
+            retrieve_flatpak_transfer_files,
             open_external_url,
             print_pdf_bytes,
             open_pdf_bytes

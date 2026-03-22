@@ -9,6 +9,8 @@ interface InspectorProps {
   pageCount: number;
   totalImageCount: number;
   cellSizeMm: { widthMm: number; heightMm: number } | null;
+  isQuickPrintAvailable: boolean;
+  printWithOptionsLabel: string;
   onDispatch: Dispatch<ProjectAction>;
   onReset: () => void;
   onExportPdf: () => void;
@@ -205,6 +207,8 @@ export function Inspector({
   pageCount,
   totalImageCount,
   cellSizeMm,
+  isQuickPrintAvailable,
+  printWithOptionsLabel,
   onDispatch,
   onReset,
   onExportPdf,
@@ -553,23 +557,25 @@ export function Inspector({
           >
             Export PDF
           </button>
-          <div className="print-action-row">
-            <button
-              className="button"
-              type="button"
-              onClick={onPrintDirect}
-              disabled={!hasImages}
-              title={!hasImages ? "Add at least one image to enable this action." : undefined}
-            >
-              Quick print
-            </button>
-            <PrintCopiesControl
-              value={settings.printCopies}
-              onChange={(printCopies) =>
-                onDispatch({ type: "settings/updatePrintCopies", payload: { printCopies } })
-              }
-            />
-          </div>
+          {isQuickPrintAvailable ? (
+            <div className="print-action-row">
+              <button
+                className="button"
+                type="button"
+                onClick={onPrintDirect}
+                disabled={!hasImages}
+                title={!hasImages ? "Add at least one image to enable this action." : undefined}
+              >
+                Quick print
+              </button>
+              <PrintCopiesControl
+                value={settings.printCopies}
+                onChange={(printCopies) =>
+                  onDispatch({ type: "settings/updatePrintCopies", payload: { printCopies } })
+                }
+              />
+            </div>
+          ) : null}
           <button
             className="button"
             type="button"
@@ -577,7 +583,7 @@ export function Inspector({
             disabled={!hasImages}
             title={!hasImages ? "Add at least one image to enable this action." : undefined}
           >
-            Open print-ready PDF (Print with Options)
+            {printWithOptionsLabel}
           </button>
           <button className="button" type="button" onClick={onReset}>
             Reset project

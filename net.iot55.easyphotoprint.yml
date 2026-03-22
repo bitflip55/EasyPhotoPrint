@@ -1,0 +1,38 @@
+id: net.iot55.easyphotoprint
+runtime: org.gnome.Platform
+runtime-version: "48"
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.node22
+  - org.freedesktop.Sdk.Extension.rust-stable
+command: easy-photo-print
+
+finish-args:
+  - --share=ipc
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+  - --env=GTK_MODULES=
+  - --env=WEBKIT_DISABLE_DMABUF_RENDERER=1
+
+modules:
+  - name: easyphotoprint
+    buildsystem: simple
+    build-options:
+      append-path: /usr/lib/sdk/node22/bin:/usr/lib/sdk/rust-stable/bin
+    build-commands:
+      - npm ci --offline --include=dev --cache "${PWD}/flatpak-node/npm-cache"
+      - npm run build
+      - cargo --offline --config flatpak/cargo/config.toml build --release --manifest-path src-tauri/Cargo.toml
+      - install -Dm755 src-tauri/target/release/easy-photo-print /app/bin/easy-photo-print
+      - install -Dm644 flatpak/net.iot55.easyphotoprint.desktop /app/share/applications/net.iot55.easyphotoprint.desktop
+      - install -Dm644 src-tauri/linux/net.iot55.easyphotoprint.metainfo.xml /app/share/metainfo/net.iot55.easyphotoprint.metainfo.xml
+      - install -Dm644 src-tauri/icons/128x128.png /app/share/icons/hicolor/128x128/apps/net.iot55.easyphotoprint.png
+      - install -Dm644 src-tauri/icons/256x256.png /app/share/icons/hicolor/256x256/apps/net.iot55.easyphotoprint.png
+      - install -Dm644 src-tauri/icons/512x512.png /app/share/icons/hicolor/512x512/apps/net.iot55.easyphotoprint.png
+    sources:
+      - flatpak/npm-sources.json
+      # Local checkout source for preparation and local testing.
+      # Replace this with an immutable git tag or release tarball source before the Flathub PR.
+      - type: dir
+        path: .

@@ -11,6 +11,8 @@ interface SidebarProps {
   project: ProjectDocument;
   pageCount: number;
   cellSizeMm: { widthMm: number; heightMm: number } | null;
+  isQuickPrintAvailable: boolean;
+  printWithOptionsLabel: string;
   onDispatch: Dispatch<ProjectAction>;
   onAddFiles: () => void;
   onReset: () => void;
@@ -27,6 +29,8 @@ export function Sidebar(props: SidebarProps) {
     project,
     pageCount,
     cellSizeMm,
+    isQuickPrintAvailable,
+    printWithOptionsLabel,
     onDispatch,
     onAddFiles,
     onReset,
@@ -56,6 +60,8 @@ export function Sidebar(props: SidebarProps) {
         pageCount={pageCount}
         totalImageCount={project.images.length}
         cellSizeMm={cellSizeMm}
+        isQuickPrintAvailable={isQuickPrintAvailable}
+        printWithOptionsLabel={printWithOptionsLabel}
         onDispatch={onDispatch}
         onReset={onReset}
         onExportPdf={onExportPdf}

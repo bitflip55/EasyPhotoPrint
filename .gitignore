@@ -3,6 +3,9 @@ dist/
 .vite/
 target/
 src-tauri/target/
+.flatpak-builder/
+flatpak-build/
+flatpak-node/
 Cargo.lock
 *.log
 *.pdf

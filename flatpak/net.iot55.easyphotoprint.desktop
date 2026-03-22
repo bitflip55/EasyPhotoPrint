@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=EasyPhotoPrint
+Comment=A lightweight modern photo layout and print app for Linux
+Exec=easy-photo-print %F
+Icon=net.iot55.easyphotoprint
+Terminal=false
+Categories=Graphics;Photography;
+MimeType=image/png;image/jpeg;image/webp;image/gif;image/bmp;
+StartupWMClass=net.iot55.easyphotoprint

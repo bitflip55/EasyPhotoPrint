@@ -36,6 +36,8 @@ check_command npm
 check_command cargo
 check_command rustc
 check_command pkg-config
+check_command flatpak
+check_command flatpak-builder
 
 if command -v node >/dev/null 2>&1; then
   node_major="$(node -p "process.versions.node.split('.')[0]")"
@@ -54,6 +56,7 @@ if command -v pkg-config >/dev/null 2>&1; then
   check_pkg_config webkit2gtk-4.1
   check_pkg_config javascriptcoregtk-4.1
   check_pkg_config libsoup-3.0
+  check_pkg_config gtk+-3.0
 fi
 
 echo

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>net.iot55.easyphotoprint</id>
+  <name>EasyPhotoPrint</name>
+  <summary>A lightweight modern photo layout and print app for Linux</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <developer id="net.iot55">
+    <name>Patrick Weiss</name>
+  </developer>
+  <launchable type="desktop-id">net.iot55.easyphotoprint.desktop</launchable>
+  <categories>
+    <category>Graphics</category>
+    <category>Photography</category>
+  </categories>
+  <description>
+    <p>
+      EasyPhotoPrint is a lightweight modern photo layout and print app for Linux,
+      inspired by classic tools such as PhotoPrint.
+    </p>
+    <p>
+      It lets you arrange local photos on printable pages with configurable formats,
+      grids, margins, spacing, multi-page PDF export and system printing.
+    </p>
+  </description>
+  <url type="homepage">https://github.com/bitflip55/EasyPhotoPrint</url>
+  <content_rating type="oars-1.1" />
+</component>

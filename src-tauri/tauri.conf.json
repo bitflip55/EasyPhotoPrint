@@ -2,7 +2,7 @@
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "EasyPhotoPrint",
   "version": "0.2.4",
-  "identifier": "com.bitflip.easyphotoprint",
+  "identifier": "net.iot55.easyphotoprint",
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
@@ -52,7 +52,7 @@
     "linux": {
       "deb": {
         "section": "graphics",
-        "desktopTemplate": "linux/easy-photo-print.desktop.hbs",
+        "desktopTemplate": "linux/net.iot55.easyphotoprint.desktop.hbs",
         "depends": [
           "libgtk-3-0",
           "libwebkit2gtk-4.1-0",
@@ -62,13 +62,13 @@
           "libxdo3"
         ],
         "files": {
-          "/usr/share/metainfo/com.bitflip.easyphotoprint.metainfo.xml": "linux/com.bitflip.easyphotoprint.metainfo.xml"
+          "/usr/share/metainfo/net.iot55.easyphotoprint.metainfo.xml": "linux/net.iot55.easyphotoprint.metainfo.xml"
         }
       },
       "rpm": {
-        "desktopTemplate": "linux/easy-photo-print.desktop.hbs",
+        "desktopTemplate": "linux/net.iot55.easyphotoprint.desktop.hbs",
         "files": {
-          "/usr/share/metainfo/com.bitflip.easyphotoprint.metainfo.xml": "linux/com.bitflip.easyphotoprint.metainfo.xml"
+          "/usr/share/metainfo/net.iot55.easyphotoprint.metainfo.xml": "linux/net.iot55.easyphotoprint.metainfo.xml"
         }
       }
     }

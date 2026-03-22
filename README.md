@@ -79,6 +79,11 @@ Direct download:
 
 - [EasyPhotoPrint_0.2.4_aarch64.dmg](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.4/EasyPhotoPrint_0.2.4_aarch64.dmg)
 
+Current support:
+
+- Apple Silicon only (`arm64` / `aarch64`)
+- Intel Macs are not supported by the current macOS build
+
 Install steps:
 
 1. Download the `.dmg` file.
@@ -151,6 +156,10 @@ sudo apt install -y \
   wget
 ```
 
+For a fresh Ubuntu development machine, use:
+
+- [Ubuntu development setup](docs/DEVELOPMENT-ubuntu.md)
+
 ## Development Workflow
 
 ```bash
@@ -178,10 +187,6 @@ Default release artifacts are generated under:
 3. Open a PR from `develop` to `main` and let CodeRabbit review it.
 4. Merge into `main`.
 5. Create the next version tag on `main` to publish the stable release.
-
-## Install On Ubuntu
-
-See [docs/INSTALL-ubuntu.md](docs/INSTALL-ubuntu.md).
 
 ## Release Checklist
 

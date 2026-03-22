@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type DragEvent } from "react";
+import { useEffect, useRef, useState, type DragEvent as ReactDragEvent } from "react";
 
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -26,18 +26,6 @@ interface UpdatePanelState {
   releasePageUrl: string;
 }
 
-function formatErrorMessage(error: unknown, fallback: string): string {
-  if (error instanceof Error && error.message.trim().length > 0) {
-    return `${fallback} ${error.message}`;
-  }
-
-  if (typeof error === "string" && error.trim().length > 0) {
-    return `${fallback} ${error}`;
-  }
-
-  return fallback;
-}
-
 function createTimestampedPdfFilename(): string {
   const now = new Date();
   const timestamp = [
@@ -53,8 +41,37 @@ function createTimestampedPdfFilename(): string {
   return `easy-photo-print-${timestamp}.pdf`;
 }
 
-function hasDraggedFiles(event: DragEvent<HTMLDivElement>): boolean {
-  return Array.from(event.dataTransfer.types).includes("Files");
+function formatErrorMessage(error: unknown, fallback: string): string {
+  if (error instanceof Error && error.message.trim().length > 0) {
+    return `${fallback} ${error.message}`;
+  }
+
+  if (typeof error === "string" && error.trim().length > 0) {
+    return `${fallback} ${error}`;
+  }
+
+  return fallback;
+}
+
+function hasDraggedFiles(event: Pick<DataTransfer, "types">): boolean {
+  return Array.from(event.types).some(
+    (type) => type === "Files" || type === "application/vnd.portal.filetransfer",
+  );
+}
+
+function isSupportedImageFile(file: File): boolean {
+  if (file.type.startsWith("image/")) {
+    return true;
+  }
+
+  const normalizedName = file.name.toLowerCase();
+  return [".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp"].some((extension) =>
+    normalizedName.endsWith(extension),
+  );
+}
+
+function describeDragTypes(types: readonly string[]): string {
+  return types.length > 0 ? types.join(", ") : "none";
 }
 
 export function App() {
@@ -64,6 +81,7 @@ export function App() {
   const [previewPageIndex, setPreviewPageIndex] = useState(0);
   const [isDragActive, setIsDragActive] = useState(false);
   const [resetVersion, setResetVersion] = useState(0);
+  const [isFlatpakRuntime, setIsFlatpakRuntime] = useState(false);
   const [updatePanelState, setUpdatePanelState] = useState<UpdatePanelState>({
     isUpdateAvailable: false,
     latestVersion: null,
@@ -73,7 +91,51 @@ export function App() {
   const previousImagesRef = useRef(project.images);
   const startupImagesLoadedRef = useRef(false);
   const dragDepthRef = useRef(0);
+  const isFlatpakRuntimeRef = useRef(false);
   const firstLayoutCell = layoutDocument.pages[0]?.cells[0];
+
+  useEffect(() => {
+    isFlatpakRuntimeRef.current = isFlatpakRuntime;
+  }, [isFlatpakRuntime]);
+
+  async function importDroppedTransfer(dataTransfer: DataTransfer) {
+    if (dataTransfer.files.length > 0) {
+      await handleDroppedFiles(dataTransfer.files);
+      return;
+    }
+
+    const droppedFiles = Array.from(dataTransfer.items)
+      .filter((item) => item.kind === "file")
+      .map((item) => item.getAsFile())
+      .filter((file): file is File => file !== null);
+
+    if (droppedFiles.length > 0) {
+      await handleAddFiles(droppedFiles);
+      return;
+    }
+
+    if (isFlatpakRuntimeRef.current) {
+      const transferKey = dataTransfer.getData("application/vnd.portal.filetransfer");
+      console.log("Flatpak portal transfer key", transferKey);
+
+      if (transferKey) {
+        const droppedPaths = await invoke<string[]>("retrieve_flatpak_transfer_files", {
+          key: transferKey,
+        });
+        const images = await pathsToImageItems(droppedPaths);
+        dispatch({ type: "images/add", payload: images });
+        setImportStatusMessage(`${images.length} image(s) loaded.`);
+        return;
+      }
+    }
+
+    const droppedTypes = Array.from(dataTransfer.types);
+    setImportStatusMessage(
+      droppedTypes.length > 0
+        ? `Dropped data could not be imported. Types: ${droppedTypes.join(", ")}`
+        : "Dropped data could not be imported.",
+    );
+  }
 
   useEffect(() => {
     setPreviewPageIndex((currentPageIndex) =>
@@ -167,6 +229,20 @@ export function App() {
       return;
     }
 
+    void (async () => {
+      try {
+        setIsFlatpakRuntime(await invoke<boolean>("is_flatpak_runtime"));
+      } catch (error) {
+        console.error("Flatpak runtime check failed", error);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (!isDesktopApp()) {
+      return;
+    }
+
     let unlisten: (() => void) | undefined;
 
     void (async () => {
@@ -186,6 +262,10 @@ export function App() {
           dragDepthRef.current = 0;
           setIsDragActive(false);
 
+          if (isFlatpakRuntimeRef.current) {
+            return;
+          }
+
           try {
             const images = await pathsToImageItems(event.payload.paths);
             dispatch({ type: "images/add", payload: images });
@@ -203,7 +283,7 @@ export function App() {
     return () => {
       unlisten?.();
     };
-  }, [dispatch]);
+  }, [dispatch, isFlatpakRuntime]);
 
   async function handleAddFiles(files: FileList | File[]) {
     try {
@@ -217,7 +297,7 @@ export function App() {
   }
 
   async function handleDroppedFiles(files: FileList) {
-    const imageFiles = Array.from(files).filter((file) => file.type.startsWith("image/"));
+    const imageFiles = Array.from(files).filter(isSupportedImageFile);
 
     if (imageFiles.length === 0) {
       setImportStatusMessage("No supported image files were dropped.");
@@ -227,8 +307,8 @@ export function App() {
     await handleAddFiles(imageFiles);
   }
 
-  function handleDragEnter(event: DragEvent<HTMLDivElement>) {
-    if (!hasDraggedFiles(event)) {
+  function handleDragEnter(event: ReactDragEvent<HTMLDivElement>) {
+    if (!hasDraggedFiles(event.dataTransfer)) {
       return;
     }
 
@@ -236,20 +316,32 @@ export function App() {
     event.stopPropagation();
     dragDepthRef.current += 1;
     setIsDragActive(true);
+
+    if (isFlatpakRuntimeRef.current) {
+      setImportStatusMessage(
+        `Drag detected. Types: ${describeDragTypes(Array.from(event.dataTransfer.types))}`,
+      );
+    }
   }
 
-  function handleDragOver(event: DragEvent<HTMLDivElement>) {
-    if (!hasDraggedFiles(event)) {
+  function handleDragOver(event: ReactDragEvent<HTMLDivElement>) {
+    if (!hasDraggedFiles(event.dataTransfer)) {
       return;
     }
 
     event.preventDefault();
     event.stopPropagation();
     event.dataTransfer.dropEffect = "copy";
+
+    if (isFlatpakRuntimeRef.current) {
+      setImportStatusMessage(
+        `Drag over app. Types: ${describeDragTypes(Array.from(event.dataTransfer.types))}`,
+      );
+    }
   }
 
-  function handleDragLeave(event: DragEvent<HTMLDivElement>) {
-    if (!hasDraggedFiles(event)) {
+  function handleDragLeave(event: ReactDragEvent<HTMLDivElement>) {
+    if (!hasDraggedFiles(event.dataTransfer)) {
       return;
     }
 
@@ -262,8 +354,8 @@ export function App() {
     }
   }
 
-  function handleDrop(event: DragEvent<HTMLDivElement>) {
-    if (!hasDraggedFiles(event)) {
+  function handleDrop(event: ReactDragEvent<HTMLDivElement>) {
+    if (!hasDraggedFiles(event.dataTransfer)) {
       return;
     }
 
@@ -271,11 +363,72 @@ export function App() {
     event.stopPropagation();
     dragDepthRef.current = 0;
     setIsDragActive(false);
-
-    if (event.dataTransfer.files.length > 0) {
-      void handleDroppedFiles(event.dataTransfer.files);
-    }
+    console.log("Flatpak/web drop types", Array.from(event.dataTransfer.types));
+    void importDroppedTransfer(event.dataTransfer).catch((error) => {
+      console.error("Drop import failed", error);
+      setImportStatusMessage(formatErrorMessage(error, "Dropped images could not be loaded."));
+    });
   }
+
+  useEffect(() => {
+    function onWindowDragOver(event: globalThis.DragEvent) {
+      if (!event.dataTransfer || !hasDraggedFiles(event.dataTransfer)) {
+        return;
+      }
+
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "copy";
+
+      if (dragDepthRef.current === 0) {
+        setIsDragActive(true);
+      }
+      dragDepthRef.current += 1;
+
+      if (isFlatpakRuntimeRef.current) {
+        setImportStatusMessage(
+          `Window drag over app. Types: ${describeDragTypes(Array.from(event.dataTransfer.types))}`,
+        );
+      }
+    }
+
+    function onWindowDragLeave(event: globalThis.DragEvent) {
+      if (!event.dataTransfer || !hasDraggedFiles(event.dataTransfer)) {
+        return;
+      }
+
+      dragDepthRef.current = Math.max(0, dragDepthRef.current - 1);
+      if (dragDepthRef.current === 0) {
+        setIsDragActive(false);
+      }
+    }
+
+    function onWindowDrop(event: globalThis.DragEvent) {
+      if (!event.dataTransfer || !hasDraggedFiles(event.dataTransfer)) {
+        return;
+      }
+
+      event.preventDefault();
+      dragDepthRef.current = 0;
+      setIsDragActive(false);
+
+      void importDroppedTransfer(event.dataTransfer).catch((error) => {
+        console.error("Window drop import failed", error);
+        setImportStatusMessage(
+          formatErrorMessage(error, "Dropped images could not be loaded."),
+        );
+      });
+    }
+
+    window.addEventListener("dragover", onWindowDragOver);
+    window.addEventListener("dragleave", onWindowDragLeave);
+    window.addEventListener("drop", onWindowDrop);
+
+    return () => {
+      window.removeEventListener("dragover", onWindowDragOver);
+      window.removeEventListener("dragleave", onWindowDragLeave);
+      window.removeEventListener("drop", onWindowDrop);
+    };
+  }, []);
 
   async function handleAddImages() {
     if (isDesktopApp()) {
@@ -337,6 +490,13 @@ export function App() {
       return;
     }
 
+    if (isFlatpakRuntime) {
+      setActionStatusMessage(
+        "Quick print is not available in the Flatpak build. Open the print-ready PDF and print from the system viewer instead.",
+      );
+      return;
+    }
+
     try {
       await printRenderDocument(renderDocument, project.settings.printCopies);
       setActionStatusMessage(
@@ -355,6 +515,8 @@ export function App() {
     }
 
     try {
+      setActionStatusMessage(isFlatpakRuntime ? "Opening print dialog..." : "Opening print...");
+
       const openedPdfPath = await openRenderDocumentPrintDialog(renderDocument);
 
       if (openedPdfPath) {
@@ -362,7 +524,7 @@ export function App() {
           `Print-ready PDF opened in the system viewer: ${openedPdfPath}`,
         );
       } else {
-        setActionStatusMessage("Print-ready PDF was opened.");
+        setActionStatusMessage("Print request was sent to the desktop portal.");
       }
     } catch (error) {
       console.error("Print with options failed", error);
@@ -427,6 +589,8 @@ export function App() {
               ? { widthMm: firstLayoutCell.widthMm, heightMm: firstLayoutCell.heightMm }
               : null
           }
+          isQuickPrintAvailable={!isFlatpakRuntime}
+          printWithOptionsLabel="Print"
           onDispatch={dispatch}
           onAddFiles={handleAddImages}
           onReset={() => {
