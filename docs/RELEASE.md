@@ -1,28 +1,66 @@
 # Release Checklist
 
-## Before Build
+## Fixed Workflow
 
-1. Verify `npm run doctor` passes on the release machine.
-2. Verify `npm test` and TypeScript checks are green.
-3. Verify `cargo check` is green.
-4. Verify version in `package.json` and `src-tauri/tauri.conf.json`.
-5. Verify icons and bundle metadata are final.
+This project uses a strict branch and release flow:
 
-## Build
+1. All development happens on `develop`.
+2. `main` only receives reviewed merges from `develop`.
+3. Stable release tags are created only on `main`.
+4. After each stable release, `main` must be merged back into `develop`.
+
+Do not skip the PR step and do not tag directly from `develop`.
+
+## Development On `develop`
+
+1. Work locally on `develop`.
+2. Test locally on Linux.
+3. Run:
 
 ```bash
-npm install
-npm run build:linux
+npm run doctor
+npm test
+./node_modules/.bin/tsc -p tsconfig.app.json --noEmit
+cargo check --manifest-path src-tauri/Cargo.toml
 ```
 
-For day-to-day work:
+4. Push `develop` to GitHub.
+5. Wait for the `Develop Build Artifacts` workflow to finish.
+6. Verify the Linux, Windows and macOS artifacts if needed.
 
-1. Develop and test locally on `develop`.
-2. Let GitHub Actions build Linux, Windows and macOS artifacts from `develop`.
-3. Open a PR from `develop` to `main`.
-4. Let CodeRabbit and the `main` verification workflow review that PR.
-5. Merge the PR.
-6. Tag `main` with the next stable version.
+## PR To `main`
+
+1. Open a PR from `develop` to `main`.
+2. Wait for:
+   - CodeRabbit
+   - `Main PR Verify`
+3. Fix all required findings on `develop`.
+4. Push again to `develop`.
+5. Merge only when CodeRabbit and all PR checks are green.
+
+## Stable Release From `main`
+
+1. Switch to `main`.
+2. Pull the merged PR result:
+
+```bash
+git checkout main
+git pull --ff-only origin main
+```
+
+3. Create the new version tag on `main`:
+
+```bash
+git tag vX.Y.Z
+git push origin vX.Y.Z
+```
+
+4. Wait for the `Main Release` workflow to finish.
+5. Verify the GitHub Release assets:
+   - `.deb`
+   - `.rpm`
+   - `.msi`
+   - `.dmg`
 
 ## Smoke Test On Fresh Ubuntu
 
@@ -33,16 +71,17 @@ For day-to-day work:
 5. Export a multi-page PDF.
 6. Print with `2` copies.
 
-## Publish
+## After Release
 
-1. Tag the release in git.
-2. Create a GitHub Release.
-3. Upload:
-   - `.deb`
-   - `.rpm`
-   - `.msi`
-   - `.dmg`
-4. Add installation notes for Ubuntu.
+1. Merge `main` back into `develop` immediately:
+
+```bash
+git checkout develop
+git merge --no-edit main
+git push origin develop
+```
+
+2. Confirm `develop` and `main` point to the same release commit before starting new work.
 
 ## Known Operational Notes
 
