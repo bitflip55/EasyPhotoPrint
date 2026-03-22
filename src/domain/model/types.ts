@@ -1,6 +1,7 @@
 export type Orientation = "portrait" | "landscape";
 
 export type PlacementMode = "fit" | "fill";
+export type PrintMode = "direct" | "dialog";
 
 export type PageFormat =
   | "A6"

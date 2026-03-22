@@ -28,6 +28,10 @@ function formatMarginLabel(value: number): string {
   return `${value} mm`;
 }
 
+function formatPrintSizeLabel(width: number, height: number): string {
+  return `${width.toFixed(1)} x ${height.toFixed(1)} mm`;
+}
+
 export function PreviewStage({
   layoutPage,
   renderPage,
@@ -38,6 +42,7 @@ export function PreviewStage({
 }: PreviewStageProps) {
   const pageAspectRatio = `${layoutPage.widthMm} / ${layoutPage.heightMm}`;
   const previewTitle = `${layoutPage.settings.page.format} Live Preview`;
+  const hasMultiplePages = renderPage.pageCount > 1;
 
   return (
     <section className="preview-stage">
@@ -50,24 +55,38 @@ export function PreviewStage({
           <p className="preview-stage__caption">
             Page {renderPage.pageIndex + 1} of {renderPage.pageCount}
           </p>
-          <div className="action-row">
-            <button
-              className="button"
-              type="button"
-              onClick={onPreviousPage}
-              disabled={!canGoToPreviousPage}
-            >
-              Back
-            </button>
-            <button
-              className="button"
-              type="button"
-              onClick={onNextPage}
-              disabled={!canGoToNextPage}
-            >
-              Next
-            </button>
-          </div>
+          {hasMultiplePages ? (
+            <div className="action-row">
+              <button
+                className={
+                  canGoToPreviousPage
+                    ? "button"
+                    : "button button--placeholder"
+                }
+                type="button"
+                onClick={onPreviousPage}
+                disabled={!canGoToPreviousPage}
+                aria-hidden={!canGoToPreviousPage}
+                tabIndex={canGoToPreviousPage ? 0 : -1}
+              >
+                Back
+              </button>
+              <button
+                className={
+                  canGoToNextPage
+                    ? "button"
+                    : "button button--placeholder"
+                }
+                type="button"
+                onClick={onNextPage}
+                disabled={!canGoToNextPage}
+                aria-hidden={!canGoToNextPage}
+                tabIndex={canGoToNextPage ? 0 : -1}
+              >
+                Next
+              </button>
+            </div>
+          ) : null}
         </div>
       </header>
 
@@ -119,35 +138,43 @@ export function PreviewStage({
                 }}
               >
                 {cell.child ? (
-                  <div
-                    className="page-preview__image-frame"
-                    style={{
-                      left: toPercent(
-                        cell.imageFrameRect.x - cell.targetRect.x,
-                        cell.targetRect.width,
-                      ),
-                      top: toPercent(
-                        cell.imageFrameRect.y - cell.targetRect.y,
-                        cell.targetRect.height,
-                      ),
-                      width: toPercent(cell.imageFrameRect.width, cell.targetRect.width),
-                      height: toPercent(cell.imageFrameRect.height, cell.targetRect.height),
-                    }}
-                  >
-                    <img
-                      alt={`Preview ${index + 1}`}
-                      className="page-preview__image"
-                      src={cell.child.source}
+                  <>
+                    <div
+                      className="page-preview__image-frame"
                       style={{
-                        objectFit:
-                          cell.child.placementMode === "fill" ? "cover" : "fill",
-                        objectPosition: toObjectPosition(
-                          cell.child.alignX,
-                          cell.child.alignY,
+                        left: toPercent(
+                          cell.imageFrameRect.x - cell.targetRect.x,
+                          cell.targetRect.width,
                         ),
+                        top: toPercent(
+                          cell.imageFrameRect.y - cell.targetRect.y,
+                          cell.targetRect.height,
+                        ),
+                        width: toPercent(cell.imageFrameRect.width, cell.targetRect.width),
+                        height: toPercent(cell.imageFrameRect.height, cell.targetRect.height),
                       }}
-                    />
-                  </div>
+                    >
+                      <img
+                        alt={`Preview ${index + 1}`}
+                        className="page-preview__image"
+                        src={cell.child.source}
+                        style={{
+                          objectFit:
+                            cell.child.placementMode === "fill" ? "cover" : "fill",
+                          objectPosition: toObjectPosition(
+                            cell.child.alignX,
+                            cell.child.alignY,
+                          ),
+                        }}
+                      />
+                    </div>
+                    <div className="page-preview__print-size">
+                      {formatPrintSizeLabel(
+                        cell.imageFrameRect.width,
+                        cell.imageFrameRect.height,
+                      )}
+                    </div>
+                  </>
                 ) : (
                   <span>Empty</span>
                 )}

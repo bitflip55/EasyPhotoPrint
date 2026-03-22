@@ -8,10 +8,12 @@ interface InspectorProps {
   project: ProjectDocument;
   pageCount: number;
   totalImageCount: number;
+  cellSizeMm: { widthMm: number; heightMm: number } | null;
   onDispatch: Dispatch<ProjectAction>;
   onReset: () => void;
   onExportPdf: () => void;
-  onPrint: () => void;
+  onPrintDirect: () => void;
+  onPrintWithOptions: () => void;
   actionStatusMessage: string | null;
 }
 
@@ -78,17 +80,24 @@ function PrintCopiesControl({
   );
 }
 
+function formatMmSize(widthMm: number, heightMm: number): string {
+  return `${widthMm.toFixed(1)} x ${heightMm.toFixed(1)} mm`;
+}
+
 export function Inspector({
   project,
   pageCount,
   totalImageCount,
+  cellSizeMm,
   onDispatch,
   onReset,
   onExportPdf,
-  onPrint,
+  onPrintDirect,
+  onPrintWithOptions,
   actionStatusMessage,
 }: InspectorProps) {
   const { settings } = project;
+  const hasImages = totalImageCount > 0;
 
   return (
     <div className="panel-stack">
@@ -286,20 +295,30 @@ export function Inspector({
             ? "No images loaded yet."
             : `${totalImageCount} image(s) across ${pageCount} page(s).`}
         </p>
+        {cellSizeMm ? (
+          <p className="notice notice--compact">
+            Output cell size: {formatMmSize(cellSizeMm.widthMm, cellSizeMm.heightMm)}
+          </p>
+        ) : null}
       </section>
 
       <section className="panel">
         <div className="panel__header">
           <p className="eyebrow">Actions</p>
-          <h2>Export and reset</h2>
+          <h2>Export, print and reset</h2>
         </div>
         <div className="action-stack">
-          <button className="button" type="button" onClick={onExportPdf}>
+          <button className="button" type="button" onClick={onExportPdf} disabled={!hasImages}>
             Export PDF
           </button>
           <div className="print-action-row">
-            <button className="button" type="button" onClick={onPrint}>
-              Print
+            <button
+              className="button"
+              type="button"
+              onClick={onPrintDirect}
+              disabled={!hasImages}
+            >
+              Quick print
             </button>
             <PrintCopiesControl
               value={settings.printCopies}
@@ -308,7 +327,15 @@ export function Inspector({
               }
             />
           </div>
-          <button className="button button--ghost" type="button" onClick={onReset}>
+          <button
+            className="button"
+            type="button"
+            onClick={onPrintWithOptions}
+            disabled={!hasImages}
+          >
+            Open print-ready PDF (Print with Options)
+          </button>
+          <button className="button" type="button" onClick={onReset}>
             Reset project
           </button>
         </div>

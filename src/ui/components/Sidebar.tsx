@@ -9,11 +9,13 @@ import type { ProjectAction } from "@/state/actions";
 interface SidebarProps {
   project: ProjectDocument;
   pageCount: number;
+  cellSizeMm: { widthMm: number; heightMm: number } | null;
   onDispatch: Dispatch<ProjectAction>;
   onAddFiles: () => void;
   onReset: () => void;
   onExportPdf: () => void;
-  onPrint: () => void;
+  onPrintDirect: () => void;
+  onPrintWithOptions: () => void;
   importStatusMessage: string | null;
   actionStatusMessage: string | null;
 }
@@ -22,11 +24,13 @@ export function Sidebar(props: SidebarProps) {
   const {
     project,
     pageCount,
+    cellSizeMm,
     onDispatch,
     onAddFiles,
     onReset,
     onExportPdf,
-    onPrint,
+    onPrintDirect,
+    onPrintWithOptions,
     importStatusMessage,
     actionStatusMessage,
   } = props;
@@ -48,10 +52,12 @@ export function Sidebar(props: SidebarProps) {
         project={project}
         pageCount={pageCount}
         totalImageCount={project.images.length}
+        cellSizeMm={cellSizeMm}
         onDispatch={onDispatch}
         onReset={onReset}
         onExportPdf={onExportPdf}
-        onPrint={onPrint}
+        onPrintDirect={onPrintDirect}
+        onPrintWithOptions={onPrintWithOptions}
         actionStatusMessage={actionStatusMessage}
       />
     </div>

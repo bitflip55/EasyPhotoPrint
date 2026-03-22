@@ -12,7 +12,7 @@ import { openExternalUrl } from "@/utils/external";
 import { savePdfBytes } from "@/utils/files";
 import { filesToImageItems, pathsToImageItems } from "@/utils/images";
 import { isDesktopApp } from "@/utils/platform";
-import { printRenderDocument } from "@/utils/print";
+import { openRenderDocumentPrintDialog, printRenderDocument } from "@/utils/print";
 import {
   checkForLatestRelease,
   getReleaseDownloadsPageUrl,
@@ -72,6 +72,7 @@ export function App() {
   const previousImagesRef = useRef(project.images);
   const startupImagesLoadedRef = useRef(false);
   const dragDepthRef = useRef(0);
+  const firstLayoutCell = layoutDocument.pages[0]?.cells[0];
 
   useEffect(() => {
     setPreviewPageIndex((currentPageIndex) =>
@@ -309,6 +310,11 @@ export function App() {
   }
 
   async function handleExportPdf() {
+    if (project.images.length === 0) {
+      setActionStatusMessage("Add at least one image before exporting a PDF.");
+      return;
+    }
+
     try {
       const pdfBytes = await renderPdfDocumentFromPages(renderDocument);
       const exportResult = await savePdfBytes(createTimestampedPdfFilename(), pdfBytes);
@@ -324,15 +330,44 @@ export function App() {
     }
   }
 
-  async function handlePrint() {
+  async function handlePrintDirect() {
+    if (project.images.length === 0) {
+      setActionStatusMessage("Add at least one image before printing.");
+      return;
+    }
+
     try {
       await printRenderDocument(renderDocument, project.settings.printCopies);
       setActionStatusMessage(
-        `Print job with ${project.settings.printCopies} cop${project.settings.printCopies === 1 ? "y" : "ies"} was submitted.`,
+        `Direct print job with ${project.settings.printCopies} cop${project.settings.printCopies === 1 ? "y" : "ies"} was submitted.`,
       );
     } catch (error) {
       console.error("Print failed", error);
       setActionStatusMessage(formatErrorMessage(error, "Printing could not be started."));
+    }
+  }
+
+  async function handlePrintWithOptions() {
+    if (project.images.length === 0) {
+      setActionStatusMessage("Add at least one image before opening a print-ready PDF.");
+      return;
+    }
+
+    try {
+      const openedPdfPath = await openRenderDocumentPrintDialog(renderDocument);
+
+      if (openedPdfPath) {
+        setActionStatusMessage(
+          `Print-ready PDF opened in the system viewer: ${openedPdfPath}`,
+        );
+      } else {
+        setActionStatusMessage("Print-ready PDF was opened.");
+      }
+    } catch (error) {
+      console.error("Print with options failed", error);
+      setActionStatusMessage(
+        formatErrorMessage(error, "Print dialog could not be opened."),
+      );
     }
   }
 
@@ -385,6 +420,11 @@ export function App() {
         <Sidebar
           project={project}
           pageCount={layoutDocument.pageCount}
+          cellSizeMm={
+            firstLayoutCell
+              ? { widthMm: firstLayoutCell.widthMm, heightMm: firstLayoutCell.heightMm }
+              : null
+          }
           onDispatch={dispatch}
           onAddFiles={handleAddImages}
           onReset={() => {
@@ -396,7 +436,8 @@ export function App() {
             setActionStatusMessage("Project was reset.");
           }}
           onExportPdf={() => void handleExportPdf()}
-          onPrint={() => void handlePrint()}
+          onPrintDirect={() => void handlePrintDirect()}
+          onPrintWithOptions={() => void handlePrintWithOptions()}
           importStatusMessage={importStatusMessage}
           actionStatusMessage={actionStatusMessage}
         />

@@ -15,6 +15,15 @@ npm install
 npm run build:linux
 ```
 
+For day-to-day work:
+
+1. Develop and test locally on `develop`.
+2. Let GitHub Actions build Linux, Windows and macOS artifacts from `develop`.
+3. Open a PR from `develop` to `main`.
+4. Let CodeRabbit and the `main` verification workflow review that PR.
+5. Merge the PR.
+6. Tag `main` with the next stable version.
+
 ## Smoke Test On Fresh Ubuntu
 
 1. Install the generated `.deb`.
@@ -31,7 +40,8 @@ npm run build:linux
 3. Upload:
    - `.deb`
    - `.rpm`
-   - `.AppImage`
+   - `.msi`
+   - `.dmg`
 4. Add installation notes for Ubuntu.
 
 ## Known Operational Notes

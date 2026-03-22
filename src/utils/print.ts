@@ -36,3 +36,16 @@ export async function printRenderDocument(
 
   await invoke("print_pdf_bytes", { bytes: Array.from(pdfBytes), copies });
 }
+
+export async function openRenderDocumentPrintDialog(
+  renderDocument: RenderDocument,
+): Promise<string | void> {
+  const pdfBytes = await renderPdfDocumentFromPages(renderDocument);
+
+  if (!isDesktopApp()) {
+    triggerBrowserPrint(pdfBytes);
+    return;
+  }
+
+  return invoke<string>("open_pdf_bytes", { bytes: Array.from(pdfBytes) });
+}

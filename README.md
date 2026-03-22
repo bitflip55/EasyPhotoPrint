@@ -8,6 +8,7 @@ EasyPhotoPrint is a lightweight modern photo layout and print desktop app, inspi
 - [Linux `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint_0.2.2_amd64.deb)
 - [Linux `.rpm` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint-0.2.2-1.x86_64.rpm)
 - [Windows `.msi` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint_0.2.2_x64_en-US.msi)
+- [macOS `.dmg` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint_0.2.2_aarch64.dmg)
 
 Mainline release artifacts are planned as:
 
@@ -19,7 +20,7 @@ Mainline release artifacts are planned as:
 Current channel:
 
 - `main`: stable releases
-- `develop`: fast integration branch with Linux `.deb` CI artifacts
+- `develop`: active development branch with build artifacts for Linux, Windows and macOS
 
 ## Install On Linux
 
@@ -71,6 +72,24 @@ Install steps:
 2. Double-click it.
 3. Follow the installer.
 4. Start `EasyPhotoPrint` from the Start menu.
+
+## Install On macOS
+
+Direct download:
+
+- [EasyPhotoPrint_0.2.2_aarch64.dmg](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint_0.2.2_aarch64.dmg)
+
+Install steps:
+
+1. Download the `.dmg` file.
+2. Open it and drag `EasyPhotoPrint.app` to `Applications`.
+3. If macOS blocks the app, run this in Terminal:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/EasyPhotoPrint.app
+```
+
+4. Start `EasyPhotoPrint` from `Applications`.
 
 ## Typical Use
 
@@ -140,6 +159,8 @@ npm install
 npm run tauri dev
 ```
 
+Local development and Linux testing happen on your machine. Cross-platform build verification happens on GitHub Actions from `develop`.
+
 ## Build Linux Packages
 
 ```bash
@@ -149,6 +170,14 @@ npm run build:linux
 Default release artifacts are generated under:
 
 - `src-tauri/target/release/bundle/deb/`
+
+## Branch And Release Flow
+
+1. Develop and test the Linux app locally on `develop`.
+2. Let GitHub Actions build Linux, Windows and macOS artifacts from `develop`.
+3. Open a PR from `develop` to `main` and let CodeRabbit review it.
+4. Merge into `main`.
+5. Create the next version tag on `main` to publish the stable release.
 
 ## Install On Ubuntu
 

@@ -3,6 +3,48 @@ use std::path::PathBuf;
 use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+fn write_temp_pdf(bytes: Vec<u8>) -> Result<PathBuf, String> {
+    let timestamp = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map_err(|error| error.to_string())?
+        .as_millis();
+    let output_path: PathBuf =
+        std::env::temp_dir().join(format!("easy-photo-print-{}.pdf", timestamp));
+
+    fs::write(&output_path, bytes).map_err(|error| error.to_string())?;
+
+    Ok(output_path)
+}
+
+fn open_path_in_default_app(path: &PathBuf) -> Result<(), String> {
+    #[cfg(target_os = "linux")]
+    let status = Command::new("xdg-open")
+        .arg(path)
+        .status()
+        .map_err(|error| format!("Failed to open generated PDF: {}", error))?;
+
+    #[cfg(target_os = "macos")]
+    let status = Command::new("open")
+        .arg(path)
+        .status()
+        .map_err(|error| format!("Failed to open generated PDF: {}", error))?;
+
+    #[cfg(target_os = "windows")]
+    let status = Command::new("cmd")
+        .args(["/C", "start", "", &path.display().to_string()])
+        .status()
+        .map_err(|error| format!("Failed to open generated PDF: {}", error))?;
+
+    if status.success() {
+        Ok(())
+    } else {
+        Err(format!(
+            "Opening the generated PDF exited with status {:?}",
+            status.code()
+        ))
+    }
+}
+
 #[tauri::command]
 fn get_startup_image_paths() -> Vec<String> {
     std::env::args()
@@ -73,14 +115,7 @@ fn open_external_url(url: String) -> Result<(), String> {
 
 #[tauri::command]
 fn print_pdf_bytes(bytes: Vec<u8>, copies: Option<u32>) -> Result<(), String> {
-    let timestamp = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map_err(|error| error.to_string())?
-        .as_millis();
-    let output_path: PathBuf =
-        std::env::temp_dir().join(format!("easy-photo-print-{}.pdf", timestamp));
-
-    fs::write(&output_path, bytes).map_err(|error| error.to_string())?;
+    let output_path = write_temp_pdf(bytes)?;
 
     let copies = copies.unwrap_or(1).max(1);
 
@@ -141,6 +176,13 @@ fn print_pdf_bytes(bytes: Vec<u8>, copies: Option<u32>) -> Result<(), String> {
     }
 }
 
+#[tauri::command]
+fn open_pdf_bytes(bytes: Vec<u8>) -> Result<String, String> {
+    let output_path = write_temp_pdf(bytes)?;
+    open_path_in_default_app(&output_path)?;
+    Ok(output_path.display().to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -149,7 +191,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             get_startup_image_paths,
             open_external_url,
-            print_pdf_bytes
+            print_pdf_bytes,
+            open_pdf_bytes
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

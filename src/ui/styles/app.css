@@ -13,9 +13,9 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --panel-bg: rgba(12, 16, 45, 0.48);
-  --panel-border: rgba(210, 227, 255, 0.12);
-  --panel-shadow: 0 24px 60px rgba(9, 8, 35, 0.34);
+  --panel-bg: rgba(12, 16, 45, 0.62);
+  --panel-border: rgba(210, 227, 255, 0.14);
+  --panel-shadow: 0 24px 60px rgba(9, 8, 35, 0.38);
   --accent: #8b6dff;
   --accent-muted: rgba(139, 109, 255, 0.18);
   --text-soft: rgba(223, 234, 255, 0.74);
@@ -314,8 +314,17 @@ select:disabled {
   color: #fff;
 }
 
+.button--full {
+  width: 100%;
+}
+
 .button--ghost {
   background: transparent;
+}
+
+.button--placeholder {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .action-row {
@@ -334,6 +343,11 @@ select:disabled {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 10px;
   align-items: center;
+}
+
+.notice--compact {
+  margin-top: -2px;
+  font-size: 0.88rem;
 }
 
 .print-copies-control {
@@ -587,6 +601,21 @@ select:disabled {
 .page-preview__image-frame {
   position: absolute;
   overflow: hidden;
+}
+
+.page-preview__print-size {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  padding: 4px 6px;
+  border-radius: 999px;
+  background: rgba(16, 22, 42, 0.72);
+  color: #eef4ff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  pointer-events: none;
 }
 
 .page-preview__image {
