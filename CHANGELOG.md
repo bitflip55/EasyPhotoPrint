@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.2.4 - 2026-03-22
+
+- Reissued the `0.2.3` product changes through the reviewed `develop -> main` workflow so CodeRabbit and the main PR verification checks run before release.
+- Updated versioned release links and installation references from `0.2.3` to `0.2.4`.
+- Kept the macOS `develop` artifact upload-path fix in place so Apple Silicon DMG artifacts upload correctly from GitHub Actions.
+
 ## 0.2.3 - 2026-03-22
 
 - Added per-image print size overlays directly in the live preview.
