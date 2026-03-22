@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.2.4 - 2026-03-22
+
+- Improved the layout inspector by grouping placement controls and layout output info into the main layout panel.
+- Added link/unlink controls for paired margins and gaps, including relinking behavior and reset-safe defaults.
+- Disabled export and print actions until at least one image is loaded, with clearer tooltip guidance.
+- Improved live preview navigation visibility and per-image printed size overlays.
+- Fixed the `develop` macOS artifact upload path so DMG artifacts publish correctly from GitHub Actions.
+
 ## 0.2.3 - 2026-03-22
 
 - Added per-image print size overlays directly in the live preview.
