@@ -63,6 +63,7 @@ export function App() {
   const [actionStatusMessage, setActionStatusMessage] = useState<string | null>(null);
   const [previewPageIndex, setPreviewPageIndex] = useState(0);
   const [isDragActive, setIsDragActive] = useState(false);
+  const [resetVersion, setResetVersion] = useState(0);
   const [updatePanelState, setUpdatePanelState] = useState<UpdatePanelState>({
     isUpdateAvailable: false,
     latestVersion: null,
@@ -418,6 +419,7 @@ export function App() {
       />
       <aside className="app-shell__sidebar">
         <Sidebar
+          resetVersion={resetVersion}
           project={project}
           pageCount={layoutDocument.pageCount}
           cellSizeMm={
@@ -432,6 +434,7 @@ export function App() {
               type: "project/reset",
               payload: createDefaultProjectDocument(),
             });
+            setResetVersion((value) => value + 1);
             setImportStatusMessage(null);
             setActionStatusMessage("Project was reset.");
           }}

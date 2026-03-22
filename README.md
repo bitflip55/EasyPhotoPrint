@@ -5,10 +5,10 @@ EasyPhotoPrint is a lightweight modern photo layout and print desktop app, inspi
 ## Downloads
 
 - [Latest releases](https://github.com/bitflip55/EasyPhotoPrint/releases)
-- [Linux `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint_0.2.2_amd64.deb)
-- [Linux `.rpm` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint-0.2.2-1.x86_64.rpm)
-- [Windows `.msi` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint_0.2.2_x64_en-US.msi)
-- [macOS `.dmg` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint_0.2.2_aarch64.dmg)
+- [Linux `.deb` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.3/EasyPhotoPrint_0.2.3_amd64.deb)
+- [Linux `.rpm` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.3/EasyPhotoPrint-0.2.3-1.x86_64.rpm)
+- [Windows `.msi` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.3/EasyPhotoPrint_0.2.3_x64_en-US.msi)
+- [macOS `.dmg` download](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.3/EasyPhotoPrint_0.2.3_aarch64.dmg)
 
 Mainline release artifacts are planned as:
 
@@ -26,13 +26,13 @@ Current channel:
 
 Direct download:
 
-- [EasyPhotoPrint_0.2.2_amd64.deb](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint_0.2.2_amd64.deb)
+- [EasyPhotoPrint_0.2.3_amd64.deb](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.3/EasyPhotoPrint_0.2.3_amd64.deb)
 
 Install with `apt`:
 
 ```bash
-wget "https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint_0.2.2_amd64.deb"
-sudo apt install "./EasyPhotoPrint_0.2.2_amd64.deb"
+wget "https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.3/EasyPhotoPrint_0.2.3_amd64.deb"
+sudo apt install "./EasyPhotoPrint_0.2.3_amd64.deb"
 ```
 
 Start the app:
@@ -45,13 +45,13 @@ easy-photo-print
 
 Direct download:
 
-- [EasyPhotoPrint-0.2.2-1.x86_64.rpm](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint-0.2.2-1.x86_64.rpm)
+- [EasyPhotoPrint-0.2.3-1.x86_64.rpm](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.3/EasyPhotoPrint-0.2.3-1.x86_64.rpm)
 
 Install with `dnf`:
 
 ```bash
-wget "https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint-0.2.2-1.x86_64.rpm"
-sudo dnf install "./EasyPhotoPrint-0.2.2-1.x86_64.rpm"
+wget "https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.3/EasyPhotoPrint-0.2.3-1.x86_64.rpm"
+sudo dnf install "./EasyPhotoPrint-0.2.3-1.x86_64.rpm"
 ```
 
 Start the app:
@@ -64,7 +64,7 @@ easy-photo-print
 
 Direct download:
 
-- [EasyPhotoPrint_0.2.2_x64_en-US.msi](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint_0.2.2_x64_en-US.msi)
+- [EasyPhotoPrint_0.2.3_x64_en-US.msi](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.3/EasyPhotoPrint_0.2.3_x64_en-US.msi)
 
 Install steps:
 
@@ -77,7 +77,7 @@ Install steps:
 
 Direct download:
 
-- [EasyPhotoPrint_0.2.2_aarch64.dmg](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.2/EasyPhotoPrint_0.2.2_aarch64.dmg)
+- [EasyPhotoPrint_0.2.3_aarch64.dmg](https://github.com/bitflip55/EasyPhotoPrint/releases/download/v0.2.3/EasyPhotoPrint_0.2.3_aarch64.dmg)
 
 Install steps:
 

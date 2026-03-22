@@ -7,6 +7,7 @@ import type { ProjectDocument } from "@/domain/model/types";
 import type { ProjectAction } from "@/state/actions";
 
 interface SidebarProps {
+  resetVersion: number;
   project: ProjectDocument;
   pageCount: number;
   cellSizeMm: { widthMm: number; heightMm: number } | null;
@@ -22,6 +23,7 @@ interface SidebarProps {
 
 export function Sidebar(props: SidebarProps) {
   const {
+    resetVersion,
     project,
     pageCount,
     cellSizeMm,
@@ -49,6 +51,7 @@ export function Sidebar(props: SidebarProps) {
       </section>
 
       <Inspector
+        key={`inspector-${resetVersion}`}
         project={project}
         pageCount={pageCount}
         totalImageCount={project.images.length}

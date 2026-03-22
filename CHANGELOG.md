@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.2.3 - 2026-03-22
+
+- Added per-image print size overlays directly in the live preview.
+- Split printing into direct queue printing and opening a print-ready PDF for print options.
+- Disabled export and print actions until at least one image is loaded.
+- Moved placement controls and layout output info into the main layout panel.
+- Added linked margin and gap controls with visible link/unlink toggles and reset-aware defaults.
+- Fixed the `develop` macOS artifact workflow to upload the generated DMG from the correct target path.
+- Added a macOS install note for removing the quarantine attribute when Gatekeeper blocks the app.
+
 ## 0.2.2 - 2026-03-21
 
 - Reintroduced Linux `.rpm` packages for Fedora and other RPM-based distributions in the stable release workflow.

@@ -1,4 +1,4 @@
-import type { Dispatch } from "react";
+import { useState, type Dispatch } from "react";
 
 import type { ProjectDocument } from "@/domain/model/types";
 import type { ProjectAction } from "@/state/actions";
@@ -23,6 +23,8 @@ interface NumberFieldProps {
   min: number;
   max: number;
   step?: number;
+  disabled?: boolean;
+  title?: string;
   onChange: (value: number) => void;
 }
 
@@ -32,6 +34,8 @@ function NumberField({
   min,
   max,
   step = 1,
+  disabled = false,
+  title,
   onChange,
 }: NumberFieldProps) {
   return (
@@ -43,6 +47,35 @@ function NumberField({
         min={min}
         max={max}
         step={step}
+        disabled={disabled}
+        title={title}
+        onChange={(event) => onChange(clamp(Number(event.target.value), min, max))}
+      />
+    </label>
+  );
+}
+
+function NumberFieldInline({
+  label,
+  value,
+  min,
+  max,
+  step = 1,
+  disabled = false,
+  title,
+  onChange,
+}: NumberFieldProps) {
+  return (
+    <label className="field field--inline">
+      <span>{label}</span>
+      <input
+        type="number"
+        value={value}
+        min={min}
+        max={max}
+        step={step}
+        disabled={disabled}
+        title={title}
         onChange={(event) => onChange(clamp(Number(event.target.value), min, max))}
       />
     </label>
@@ -84,6 +117,89 @@ function formatMmSize(widthMm: number, heightMm: number): string {
   return `${widthMm.toFixed(1)} x ${heightMm.toFixed(1)} mm`;
 }
 
+function LinkToggleButton({
+  linked,
+  label,
+  onClick,
+}: {
+  linked: boolean;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      className={linked ? "link-toggle-button is-linked" : "link-toggle-button"}
+      type="button"
+      aria-pressed={linked}
+      title={label}
+      onClick={onClick}
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        {linked ? (
+          <>
+            <path
+              d="M9 15l6-6"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeWidth="1.8"
+            />
+            <path
+              d="M7.5 16.5l-1.8 1.8a3 3 0 1 1-4.2-4.2l2.6-2.6a3 3 0 0 1 4.2 0"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1.8"
+            />
+            <path
+              d="M16.5 7.5l1.8-1.8a3 3 0 1 1 4.2 4.2l-2.6 2.6a3 3 0 0 1-4.2 0"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1.8"
+            />
+          </>
+        ) : (
+          <>
+            <path
+              d="M6.5 17.5l-1.8 1.8a3 3 0 1 1-4.2-4.2l2.6-2.6a3 3 0 0 1 4.2 0"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1.8"
+            />
+            <path
+              d="M17.5 6.5l1.8-1.8a3 3 0 1 1 4.2 4.2l-2.6 2.6a3 3 0 0 1-4.2 0"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1.8"
+            />
+            <path
+              d="M9 15l6-6"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeWidth="1.8"
+            />
+            <path
+              d="M6.5 6.5l11 11"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeWidth="1.8"
+            />
+          </>
+        )}
+      </svg>
+    </button>
+  );
+}
+
 export function Inspector({
   project,
   pageCount,
@@ -98,6 +214,67 @@ export function Inspector({
 }: InspectorProps) {
   const { settings } = project;
   const hasImages = totalImageCount > 0;
+  const [isVerticalMarginsLinked, setIsVerticalMarginsLinked] = useState(true);
+  const [isHorizontalMarginsLinked, setIsHorizontalMarginsLinked] = useState(true);
+  const [isSpacingLinked, setIsSpacingLinked] = useState(true);
+
+  function updateMargins(payload: {
+    topMm?: number;
+    bottomMm?: number;
+    leftMm?: number;
+    rightMm?: number;
+  }) {
+    onDispatch({ type: "settings/updateMargins", payload });
+  }
+
+  function updateSpacing(payload: { horizontalMm?: number; verticalMm?: number }) {
+    onDispatch({ type: "settings/updateSpacing", payload });
+  }
+
+  function toggleVerticalMarginsLink() {
+    setIsVerticalMarginsLinked((current) => {
+      const next = !current;
+
+      if (next) {
+        updateMargins({
+          topMm: settings.page.margins.topMm,
+          bottomMm: settings.page.margins.topMm,
+        });
+      }
+
+      return next;
+    });
+  }
+
+  function toggleHorizontalMarginsLink() {
+    setIsHorizontalMarginsLinked((current) => {
+      const next = !current;
+
+      if (next) {
+        updateMargins({
+          leftMm: settings.page.margins.leftMm,
+          rightMm: settings.page.margins.leftMm,
+        });
+      }
+
+      return next;
+    });
+  }
+
+  function toggleSpacingLink() {
+    setIsSpacingLinked((current) => {
+      const next = !current;
+
+      if (next) {
+        updateSpacing({
+          horizontalMm: settings.page.spacing.horizontalMm,
+          verticalMm: settings.page.spacing.horizontalMm,
+        });
+      }
+
+      return next;
+    });
+  }
 
   return (
     <div className="panel-stack">
@@ -174,82 +351,6 @@ export function Inspector({
             </select>
           </label>
         </div>
-      </section>
-
-      <section className="panel">
-        <div className="panel__header">
-          <p className="eyebrow">Spacing</p>
-          <h2>Margins and gaps</h2>
-        </div>
-        <div className="field-grid field-grid--two">
-          <NumberField
-            label="Top margin"
-            value={settings.page.margins.topMm}
-            min={0}
-            max={80}
-            step={0.5}
-            onChange={(topMm) =>
-              onDispatch({ type: "settings/updateMargins", payload: { topMm } })
-            }
-          />
-          <NumberField
-            label="Bottom margin"
-            value={settings.page.margins.bottomMm}
-            min={0}
-            max={80}
-            step={0.5}
-            onChange={(bottomMm) =>
-              onDispatch({ type: "settings/updateMargins", payload: { bottomMm } })
-            }
-          />
-          <NumberField
-            label="Left margin"
-            value={settings.page.margins.leftMm}
-            min={0}
-            max={80}
-            step={0.5}
-            onChange={(leftMm) =>
-              onDispatch({ type: "settings/updateMargins", payload: { leftMm } })
-            }
-          />
-          <NumberField
-            label="Right margin"
-            value={settings.page.margins.rightMm}
-            min={0}
-            max={80}
-            step={0.5}
-            onChange={(rightMm) =>
-              onDispatch({ type: "settings/updateMargins", payload: { rightMm } })
-            }
-          />
-          <NumberField
-            label="Horizontal gap"
-            value={settings.page.spacing.horizontalMm}
-            min={0}
-            max={40}
-            step={0.5}
-            onChange={(horizontalMm) =>
-              onDispatch({ type: "settings/updateSpacing", payload: { horizontalMm } })
-            }
-          />
-          <NumberField
-            label="Vertical gap"
-            value={settings.page.spacing.verticalMm}
-            min={0}
-            max={40}
-            step={0.5}
-            onChange={(verticalMm) =>
-              onDispatch({ type: "settings/updateSpacing", payload: { verticalMm } })
-            }
-          />
-        </div>
-      </section>
-
-      <section className="panel">
-        <div className="panel__header">
-          <p className="eyebrow">Image mode</p>
-          <h2>Placement</h2>
-        </div>
         <div className="field-grid field-grid--two">
           <label className="field">
             <span>Mode</span>
@@ -304,11 +405,152 @@ export function Inspector({
 
       <section className="panel">
         <div className="panel__header">
+          <p className="eyebrow">Spacing</p>
+          <h2>Margins and gaps</h2>
+        </div>
+        <div className="linked-field-row">
+          <NumberFieldInline
+            label="Top margin"
+            value={settings.page.margins.topMm}
+            min={0}
+            max={80}
+            step={0.5}
+            onChange={(topMm) => {
+              updateMargins(
+                isVerticalMarginsLinked ? { topMm, bottomMm: topMm } : { topMm },
+              );
+            }}
+          />
+          <div className="field field--link-toggle">
+            <LinkToggleButton
+              linked={isVerticalMarginsLinked}
+              label={
+                isVerticalMarginsLinked
+                  ? "Top and bottom margins are linked"
+                  : "Top and bottom margins are independent"
+              }
+              onClick={toggleVerticalMarginsLink}
+            />
+          </div>
+          <NumberFieldInline
+            label="Bottom margin"
+            value={settings.page.margins.bottomMm}
+            min={0}
+            max={80}
+            step={0.5}
+            disabled={isVerticalMarginsLinked}
+            title={
+              isVerticalMarginsLinked
+                ? "Disable the link to edit this value separately."
+                : undefined
+            }
+            onChange={(bottomMm) => {
+              setIsVerticalMarginsLinked(false);
+              updateMargins({ bottomMm });
+            }}
+          />
+        </div>
+        <div className="linked-field-row">
+          <NumberFieldInline
+            label="Left margin"
+            value={settings.page.margins.leftMm}
+            min={0}
+            max={80}
+            step={0.5}
+            onChange={(leftMm) => {
+              updateMargins(
+                isHorizontalMarginsLinked ? { leftMm, rightMm: leftMm } : { leftMm },
+              );
+            }}
+          />
+          <div className="field field--link-toggle">
+            <LinkToggleButton
+              linked={isHorizontalMarginsLinked}
+              label={
+                isHorizontalMarginsLinked
+                  ? "Left and right margins are linked"
+                  : "Left and right margins are independent"
+              }
+              onClick={toggleHorizontalMarginsLink}
+            />
+          </div>
+          <NumberFieldInline
+            label="Right margin"
+            value={settings.page.margins.rightMm}
+            min={0}
+            max={80}
+            step={0.5}
+            disabled={isHorizontalMarginsLinked}
+            title={
+              isHorizontalMarginsLinked
+                ? "Disable the link to edit this value separately."
+                : undefined
+            }
+            onChange={(rightMm) => {
+              setIsHorizontalMarginsLinked(false);
+              updateMargins({ rightMm });
+            }}
+          />
+        </div>
+        <div className="linked-field-row">
+          <NumberFieldInline
+            label="Horizontal gap"
+            value={settings.page.spacing.horizontalMm}
+            min={0}
+            max={40}
+            step={0.5}
+            onChange={(horizontalMm) => {
+              updateSpacing(
+                isSpacingLinked
+                  ? { horizontalMm, verticalMm: horizontalMm }
+                  : { horizontalMm },
+              );
+            }}
+          />
+          <div className="field field--link-toggle">
+            <LinkToggleButton
+              linked={isSpacingLinked}
+              label={
+                isSpacingLinked
+                  ? "Horizontal and vertical gaps are linked"
+                  : "Horizontal and vertical gaps are independent"
+              }
+              onClick={toggleSpacingLink}
+            />
+          </div>
+          <NumberFieldInline
+            label="Vertical gap"
+            value={settings.page.spacing.verticalMm}
+            min={0}
+            max={40}
+            step={0.5}
+            disabled={isSpacingLinked}
+            title={
+              isSpacingLinked
+                ? "Disable the link to edit this value separately."
+                : undefined
+            }
+            onChange={(verticalMm) => {
+              setIsSpacingLinked(false);
+              updateSpacing({ verticalMm });
+            }}
+          />
+        </div>
+      </section>
+
+      <section className="panel">
+        <div className="panel__header">
           <p className="eyebrow">Actions</p>
           <h2>Export, print and reset</h2>
         </div>
         <div className="action-stack">
-          <button className="button" type="button" onClick={onExportPdf} disabled={!hasImages}>
+          <button
+            className="button"
+            type="button"
+            onClick={onExportPdf}
+            disabled={!hasImages}
+            title={!hasImages ? "Add at least one image to enable this action." : undefined}
+          >
             Export PDF
           </button>
           <div className="print-action-row">
@@ -317,6 +559,7 @@ export function Inspector({
               type="button"
               onClick={onPrintDirect}
               disabled={!hasImages}
+              title={!hasImages ? "Add at least one image to enable this action." : undefined}
             >
               Quick print
             </button>
@@ -332,6 +575,7 @@ export function Inspector({
             type="button"
             onClick={onPrintWithOptions}
             disabled={!hasImages}
+            title={!hasImages ? "Add at least one image to enable this action." : undefined}
           >
             Open print-ready PDF (Print with Options)
           </button>
